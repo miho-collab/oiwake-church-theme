@@ -11,8 +11,8 @@ get_template_part(
 	'template-parts/news',
 	'archive-loop',
 	array(
-		'label_en'   => 'Information',
-		'title_ja'   => 'INFORMATION',
+		'label_en'   => 'News',
+		'title_ja'   => 'NEWS',
 		'active_tab' => 'all',
 	)
 );

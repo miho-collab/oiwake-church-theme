@@ -9,7 +9,7 @@
 get_header();
 ?>
 <main class="flex-1 w-full">
-<section class="about-page-section" data-header-zone="light">
+<section class="about-page-section" id="sunday-service" data-header-zone="light">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="stagger-in">
@@ -22,7 +22,7 @@ get_header();
 </div>
 </div>
 
-<section class="about-section about-section--organ stagger-in" aria-labelledby="regular-worship-heading" id="regular-worship">
+<section class="about-section about-section--organ stagger-in" aria-labelledby="regular-worship-heading" id="regular-service">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="worship-detail-layout">
@@ -64,7 +64,7 @@ get_header();
 </div>
 </section>
 
-<section class="about-section about-section--history stagger-in" aria-labelledby="special-praise-heading" id="special-praise">
+<section class="about-section about-section--history stagger-in" aria-labelledby="special-praise-heading" id="praise-service">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="about-section-body">
@@ -125,42 +125,47 @@ get_header();
 </div>
 </section>
 
-<section class="about-section about-section--pastor stagger-in" aria-labelledby="worship-related-heading">
+<section class="about-section about-section--organ stagger-in" aria-labelledby="first-visit-heading" id="first-time-guide">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
+<div class="worship-detail-layout">
+<img alt="礼拝に集う人々" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 50% 55%;"/>
 <div class="about-section-body">
-<p class="about-section-subtitle">More Gatherings</p>
-<h2 class="about-section-title" id="worship-related-heading">ほかの集会・ご案内</h2>
-<p class="about-section-text">主日礼拝以外にも、初めての方向けの案内、聖書を学ぶ集まり、結婚式のご相談など、さまざまな場をご用意しています。関心のあるテーマから、お気軽にご覧ください。</p>
-<div class="organ-related-grid">
-<a class="organ-related-card" href="<?php echo esc_url( home_url( '/welcome/' ) ); ?>">
-<div>
-<h3>初めての方へ / Q&amp;A</h3>
-<p>礼拝の流れや服装、献金、お子さま連れでの参加など、よくあるご質問をまとめました。初めて教会を訪れる方も安心してお越しください。</p>
+<p class="about-section-subtitle">For First-Time Visitors</p>
+<h2 class="about-section-title" id="first-visit-heading">初めて礼拝に出席される方へ</h2>
+<p class="about-section-text">教会はどなたにも開かれた場所です。事前の連絡や予約は必要ありません。信仰の有無や教会の所属にかかわらず、どうぞお気軽にお越しください。</p>
+<p class="about-section-text">「教会は初めて」「礼拝の流れがわからない」という方にも、受付や週報、席のご案内でできるだけ分かりやすくお迎えしています。服装や持ち物に決まりはなく、途中からのご参加・途中でのご退席も差し支えありません。</p>
+<ol class="welcome-steps" aria-label="初めて礼拝に出席される方の当日の流れ">
+<li>
+<span class="welcome-steps__num" aria-hidden="true">①</span>
+<div class="welcome-steps__body">
+<strong>受付で週報をお受け取りください</strong>
+<p>礼拝堂の入口付近に受付があります。「初めてです」とお伝えいただければ、スタッフが丁寧にお導きします。</p>
 </div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-<a class="organ-related-card" href="#">
-<div>
-<h3>聖書を学ぶ会</h3>
-<p>聖書を少人数でゆっくり読み進める集まりです。分からないことをそのままにせず、一緒に問いかけながら学べる穏やかな時間です。</p>
+</li>
+<li>
+<span class="welcome-steps__num" aria-hidden="true">②</span>
+<div class="welcome-steps__body">
+<strong>お好きな席にお座りください</strong>
+<p>指定席はありません。前方・後方、どちらでも構いません。礼拝開始の少し前にお着きいただくと、ゆったり過ごせます。</p>
 </div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-<a class="organ-related-card" href="#">
-<div>
-<h3>結婚式</h3>
-<p>森に抱かれた礼拝堂での教会式結婚式を承ります。挙式までの流れやご相談について、専用ページで詳しくご案内しています。</p>
+</li>
+<li>
+<span class="welcome-steps__num" aria-hidden="true">③</span>
+<div class="welcome-steps__body">
+<strong>礼拝の流れは、やさしくご案内します</strong>
+<p>立ったり座ったり、讃美歌をうたったり——進行に合わせてご案内します。分からないことは遠慮なくお尋ねください。</p>
 </div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
+</li>
+</ol>
 </div>
+</div>
+<?php get_template_part( 'template-parts/welcome', 'faq' ); ?>
 <div class="gallery-page-back">
 <a class="gallery-page-back__link" href="<?php echo esc_url( home_url( '/worship/' ) ); ?>">
 <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
 <span>礼拝・集会に戻る</span>
 </a>
-</div>
 </div>
 </div>
 </div>

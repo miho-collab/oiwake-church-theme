@@ -140,50 +140,46 @@ wp_nav_menu(
 </a>
 <ul class="nav-dropdown absolute top-full mt-4 bg-background border border-outline-variant/40 shadow-sm list-none m-0 p-0 z-50">
 <li class="nav-dropdown-has-sub">
-<a class="nav-dropdown-mid" href="history.html">追分教会のあゆみ</a>
+<a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/history/' ) ); ?>">追分教会のあゆみ</a>
 <ul class="nav-dropdown-sub">
-<li><a class="nav-dropdown-sub-link" href="#">教会誌アーカイブ</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/kazaganarutoki/' ) ); ?>">季刊誌『風がなるとき』</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/history/#church-magazine-archive' ) ); ?>">教会誌アーカイブ</a></li>
 </ul>
 </li>
-<li><a class="nav-dropdown-mid" href="pastor.html">牧師紹介</a></li>
-<li><a class="nav-dropdown-mid" href="gallery.html">フォトギャラリー</a></li>
+<li><a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/pastor/' ) ); ?>">牧師紹介</a></li>
 <li class="nav-dropdown-has-sub">
-<a class="nav-dropdown-mid" href="organ-info.html">パイプオルガン</a>
+<a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/organ-info/' ) ); ?>">パイプオルガン</a>
 <ul class="nav-dropdown-sub">
-<li><a class="nav-dropdown-sub-link" href="organ-info.html">パイプオルガンの説明と図</a></li>
-<li><a class="nav-dropdown-sub-link" href="#">オルガン体験会</a></li>
-<li><a class="nav-dropdown-sub-link" href="#">オルガン教室</a></li>
-<li><a class="nav-dropdown-sub-link" href="#">オルガンコラム</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/organ-info/#organ-about' ) ); ?>">パイプオルガンの説明と図</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/organ-info/#organ-trial' ) ); ?>">オルガン体験会</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/organ-info/#organ-class' ) ); ?>">オルガン教室</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/organ-info/#organ-column' ) ); ?>">オルガンコラム</a></li>
 </ul>
 </li>
+<li><a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/wedding/' ) ); ?>">結婚式</a></li>
 </ul>
 </li>
 <li class="site-nav-item relative">
-<a class="site-nav-link hover:opacity-80 transition-opacity" href="worship.html">
+<a class="site-nav-link hover:opacity-80 transition-opacity" href="<?php echo esc_url( home_url( '/worship/' ) ); ?>">
 <span class="site-nav-ja">礼拝・集会</span>
 <span class="site-nav-en">Worship</span>
 </a>
 <ul class="nav-dropdown absolute top-full mt-4 bg-background border border-outline-variant/40 shadow-sm list-none m-0 p-0 z-50">
 <li class="nav-dropdown-has-sub">
-<a class="nav-dropdown-mid" href="service-sunday.html">主日礼拝</a>
+<a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/service-sunday/' ) ); ?>">主日礼拝</a>
 <ul class="nav-dropdown-sub">
-<li><a class="nav-dropdown-sub-link" href="service-sunday.html#regular-worship">通常礼拝</a></li>
-<li><a class="nav-dropdown-sub-link" href="service-sunday.html#special-praise">特別讃美礼拝</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/service-sunday/#regular-service' ) ); ?>">通常礼拝</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/service-sunday/#praise-service' ) ); ?>">特別讃美礼拝</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/service-sunday/#first-time-guide' ) ); ?>">初めて礼拝に出席される方へ</a></li>
 </ul>
 </li>
-<li class="nav-dropdown-has-sub">
-<a class="nav-dropdown-mid" href="welcome.html">初めての方へ</a>
-<ul class="nav-dropdown-sub">
-<li><a class="nav-dropdown-sub-link" href="welcome.html#welcome-faq">Q&amp;A</a></li>
-</ul>
-</li>
+<li><a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/childrens-church/' ) ); ?>">こどもの教会</a></li>
 <li><a class="nav-dropdown-mid" href="bible-study.html">聖書を学ぶ会</a></li>
-<li><a class="nav-dropdown-mid" href="wedding.html">結婚式</a></li>
 </ul>
 </li>
 <li class="site-nav-item relative">
-<a class="site-nav-link hover:opacity-80 transition-opacity" href="news.html">
-<span class="site-nav-ja">お知らせ</span>
+<a class="site-nav-link hover:opacity-80 transition-opacity" href="<?php echo esc_url( oiwake_get_information_url() ); ?>">
+<span class="site-nav-ja">ご案内</span>
 <span class="site-nav-en">News</span>
 </a>
 </li>
@@ -199,10 +195,9 @@ wp_nav_menu(
 <span class="site-nav-en">Access</span>
 </a>
 </li>
-<li class="site-nav-item relative">
-<a class="site-nav-link hover:opacity-80 transition-opacity" href="contact.html">
-<span class="site-nav-ja">お問い合わせ</span>
-<span class="site-nav-en">Contact</span>
+<li class="site-nav-item site-nav-item--contact relative">
+<a class="site-nav-contact-btn header-contact-btn" href="contact.html">
+<span>CONTACT</span>
 </a>
 </li>
 </ul>
@@ -237,50 +232,46 @@ wp_nav_menu(
 </a>
 <ul class="mobile-nav-dropdown list-none m-0 p-0">
 <li class="nav-dropdown-has-sub">
-<a class="nav-dropdown-mid" href="history.html">追分教会のあゆみ</a>
+<a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/history/' ) ); ?>">追分教会のあゆみ</a>
 <ul class="nav-dropdown-sub">
-<li><a class="nav-dropdown-sub-link" href="#">教会誌アーカイブ</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/kazaganarutoki/' ) ); ?>">季刊誌『風がなるとき』</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/history/#church-magazine-archive' ) ); ?>">教会誌アーカイブ</a></li>
 </ul>
 </li>
-<li><a class="nav-dropdown-mid" href="pastor.html">牧師紹介</a></li>
-<li><a class="nav-dropdown-mid" href="gallery.html">フォトギャラリー</a></li>
+<li><a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/pastor/' ) ); ?>">牧師紹介</a></li>
 <li class="nav-dropdown-has-sub">
-<a class="nav-dropdown-mid" href="organ-info.html">パイプオルガン</a>
+<a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/organ-info/' ) ); ?>">パイプオルガン</a>
 <ul class="nav-dropdown-sub">
-<li><a class="nav-dropdown-sub-link" href="organ-info.html">パイプオルガンの説明と図</a></li>
-<li><a class="nav-dropdown-sub-link" href="#">オルガン体験会</a></li>
-<li><a class="nav-dropdown-sub-link" href="#">オルガン教室</a></li>
-<li><a class="nav-dropdown-sub-link" href="#">オルガンコラム</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/organ-info/#organ-about' ) ); ?>">パイプオルガンの説明と図</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/organ-info/#organ-trial' ) ); ?>">オルガン体験会</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/organ-info/#organ-class' ) ); ?>">オルガン教室</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/organ-info/#organ-column' ) ); ?>">オルガンコラム</a></li>
 </ul>
 </li>
+<li><a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/wedding/' ) ); ?>">結婚式</a></li>
 </ul>
 </li>
 <li class="mobile-nav-item">
-<a class="site-nav-link hover:opacity-80 transition-opacity" href="worship.html">
+<a class="site-nav-link hover:opacity-80 transition-opacity" href="<?php echo esc_url( home_url( '/worship/' ) ); ?>">
 <span class="site-nav-ja">礼拝・集会</span>
 <span class="site-nav-en">Worship</span>
 </a>
 <ul class="mobile-nav-dropdown list-none m-0 p-0">
 <li class="nav-dropdown-has-sub">
-<a class="nav-dropdown-mid" href="service-sunday.html">主日礼拝</a>
+<a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/service-sunday/' ) ); ?>">主日礼拝</a>
 <ul class="nav-dropdown-sub">
-<li><a class="nav-dropdown-sub-link" href="service-sunday.html#regular-worship">通常礼拝</a></li>
-<li><a class="nav-dropdown-sub-link" href="service-sunday.html#special-praise">特別讃美礼拝</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/service-sunday/#regular-service' ) ); ?>">通常礼拝</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/service-sunday/#praise-service' ) ); ?>">特別讃美礼拝</a></li>
+<li><a class="nav-dropdown-sub-link" href="<?php echo esc_url( home_url( '/service-sunday/#first-time-guide' ) ); ?>">初めて礼拝に出席される方へ</a></li>
 </ul>
 </li>
-<li class="nav-dropdown-has-sub">
-<a class="nav-dropdown-mid" href="welcome.html">初めての方へ</a>
-<ul class="nav-dropdown-sub">
-<li><a class="nav-dropdown-sub-link" href="welcome.html#welcome-faq">Q&amp;A</a></li>
-</ul>
-</li>
+<li><a class="nav-dropdown-mid" href="<?php echo esc_url( home_url( '/childrens-church/' ) ); ?>">こどもの教会</a></li>
 <li><a class="nav-dropdown-mid" href="bible-study.html">聖書を学ぶ会</a></li>
-<li><a class="nav-dropdown-mid" href="wedding.html">結婚式</a></li>
 </ul>
 </li>
 <li class="mobile-nav-item">
-<a class="site-nav-link hover:opacity-80 transition-opacity" href="news.html">
-<span class="site-nav-ja">お知らせ</span>
+<a class="site-nav-link hover:opacity-80 transition-opacity" href="<?php echo esc_url( oiwake_get_information_url() ); ?>">
+<span class="site-nav-ja">ご案内</span>
 <span class="site-nav-en">News</span>
 </a>
 </li>
@@ -296,10 +287,9 @@ wp_nav_menu(
 <span class="site-nav-en">Access</span>
 </a>
 </li>
-<li class="mobile-nav-item">
-<a class="site-nav-link hover:opacity-80 transition-opacity" href="contact.html">
-<span class="site-nav-ja">お問い合わせ</span>
-<span class="site-nav-en">Contact</span>
+<li class="mobile-nav-item mobile-nav-item--contact">
+<a class="site-nav-contact-btn header-contact-btn" href="contact.html">
+<span>CONTACT</span>
 </a>
 </li>
 </ul>

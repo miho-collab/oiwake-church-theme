@@ -32,11 +32,11 @@ global $wp_query;
 $original_query = $wp_query;
 $wp_query       = $news_query; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-$label_en = 'Information';
+$label_en = 'News';
 if ( 'news' === $filter ) {
-	$label_en = 'News';
+	$label_en = 'information';
 } elseif ( 'report' === $filter ) {
-	$label_en = 'Reports';
+	$label_en = 'event report';
 }
 
 get_template_part(
@@ -44,7 +44,7 @@ get_template_part(
 	'archive-loop',
 	array(
 		'label_en'   => $label_en,
-		'title_ja'   => 'INFORMATION',
+		'title_ja'   => 'NEWS',
 		'active_tab' => $filter,
 	)
 );

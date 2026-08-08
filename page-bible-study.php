@@ -115,36 +115,8 @@ get_header();
 </div>
 </section>
 
-<section class="about-section about-section--gallery stagger-in" aria-labelledby="bible-study-related-heading">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
-<div class="about-section-body">
-<p class="about-section-subtitle">More Gatherings</p>
-<h2 class="about-section-title" id="bible-study-related-heading">ほかの集会・ご案内</h2>
-<p class="about-section-text">主日礼拝や初めての方向けページなど、関連するご案内はこちらからご覧いただけます。</p>
-<div class="organ-related-grid">
-<a class="organ-related-card" href="<?php echo esc_url( home_url( '/service-sunday/' ) ); ?>">
-<div>
-<h3>主日礼拝のご案内</h3>
-<p>通常礼拝と特別讃美礼拝の時間、流れ、年間予定をご覧いただけます。</p>
-</div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-<a class="organ-related-card" href="<?php echo esc_url( home_url( '/welcome/' ) ); ?>">
-<div>
-<h3>初めての方へ / Q&amp;A</h3>
-<p>教会が初めての方へ向けたご案内と、よくあるご質問をまとめています。</p>
-</div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-<a class="organ-related-card" href="<?php echo esc_url( home_url( '/' ) ); ?>#services-section">
-<div>
-<h3>結婚式</h3>
-<p>教会式結婚式のご案内です。ご相談の流れや準備についてご確認いただけます。</p>
-</div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-</div>
 <div class="gallery-page-back">
 <a class="gallery-page-back__link" href="<?php echo esc_url( home_url( '/worship/' ) ); ?>">
 <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
@@ -153,8 +125,6 @@ get_header();
 </div>
 </div>
 </div>
-</div>
-</section>
 
 </section>
 </main>

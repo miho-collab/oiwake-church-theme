@@ -18,6 +18,12 @@ get_header();
 <p class="about-lead">
 礼拝堂に響く、祈りを支える優しく豊かな音色——追分教会の象徴であるライル社製のパイプオルガンをご紹介します。森の静けさのなかで育まれた音楽の伝統と、礼拝を彩るこの楽器の美しさを、ゆっくりとお読みください。
 </p>
+<nav class="organ-anchor-nav" aria-label="パイプオルガン内メニュー">
+<a href="#organ-about">説明と図</a>
+<a href="#organ-trial">体験会</a>
+<a href="#organ-class">オルガン教室</a>
+<a href="#organ-column">オルガンコラム</a>
+</nav>
 </div>
 </div>
 </div>
@@ -64,12 +70,12 @@ get_header();
 </div>
 </section>
 
-<section class="about-section about-section--history stagger-in" aria-labelledby="organ-diagram-heading">
+<section class="about-section about-section--history stagger-in" id="organ-about" aria-labelledby="organ-about-heading">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="about-section-body">
 <p class="about-section-subtitle">Structure &amp; Sound</p>
-<h2 class="about-section-title" id="organ-diagram-heading">パイプオルガンの説明と図</h2>
+<h2 class="about-section-title" id="organ-about-heading">パイプオルガンの説明と図</h2>
 <p class="about-section-text">パイプオルガンは、ふいごが送り込む空気がパイプの中を振動させて音を出す楽器です。鍵盤を押すとバルブが開き、音栓（ストップ）の組み合わせによって音色や強さが変わります。以下の図版と解説で、音が生まれる仕組みをご覧ください。</p>
 <div class="organ-diagram-layout">
 <figure class="organ-diagram-figure">
@@ -103,42 +109,70 @@ get_header();
 </div>
 </section>
 
-<section class="about-section about-section--pastor stagger-in" aria-labelledby="organ-related-heading">
+<section class="about-section about-section--pastor stagger-in" id="organ-trial" aria-labelledby="organ-trial-heading">
+<div class="px-margin-safe">
+<div class="max-w-[1440px] mx-auto">
+<div class="worship-detail-layout">
+<img alt="パイプオルガン体験会のイメージ" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 68% 60%;"/>
+<div class="about-section-body">
+<p class="about-section-subtitle">Organ Experience</p>
+<h2 class="about-section-title" id="organ-trial-heading">パイプオルガン体験会</h2>
+<p class="about-section-text">実際に鍵盤に触れ、音を出しながらパイプオルガンの魅力を体感できるプログラムです。初めての方も大歓迎です。楽器の仕組みに触れながら、礼拝堂に響く音を間近で感じていただけます。</p>
+<p class="about-section-text">開催日程やお申し込みの詳細は、NEWSのご案内、またはお問い合わせフォームよりご確認ください。</p>
+<div class="about-section-cta">
+<a href="<?php echo esc_url( oiwake_get_information_tab_url( 'news' ) ); ?>">ご案内を見る</a>
+<a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">お問い合わせ</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="about-section about-section--organ stagger-in" id="organ-class" aria-labelledby="organ-class-heading">
+<div class="px-margin-safe">
+<div class="max-w-[1440px] mx-auto">
+<div class="worship-detail-layout">
+<img alt="オルガン教室のレッスン風景" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 46% 50%;"/>
+<div class="about-section-body">
+<p class="about-section-subtitle">Organ Class</p>
+<h2 class="about-section-title" id="organ-class-heading">オルガン教室</h2>
+<p class="about-section-text">礼拝堂でレッスンを受けながら、基礎から丁寧に学べる教室です。演奏技術とともに、礼拝音楽への理解を深めます。経験の有無にかかわらず、ご自身のペースで学びを進められるようサポートいたします。</p>
+<p class="about-section-text">レッスン内容・日程・受講のご相談は、お気軽にお問い合わせください。</p>
+<div class="about-section-cta">
+<a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">受講について問い合わせる</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="about-section about-section--history stagger-in" id="organ-column" aria-labelledby="organ-column-heading">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="about-section-body">
-<p class="about-section-subtitle">Explore More</p>
-<h2 class="about-section-title" id="organ-related-heading">オルガンと出会う、学ぶ、読む</h2>
-<p class="about-section-text">パイプオルガンとより深く関わりたい方のために、体験会・教室・コラムへの導線をご用意しました。音に触れる体験から、日々の学び、読み物まで、あなたの歩みに合った入り口をお選びください。</p>
-<div class="organ-related-grid">
-<a class="organ-related-card" href="#">
-<div>
-<h3>オルガン体験会</h3>
-<p>実際に鍵盤に触れ、音を出しながらパイプオルガンの魅力を体感できるプログラムです。初めての方も大歓迎です。</p>
+<p class="about-section-subtitle">Organ Column</p>
+<h2 class="about-section-title" id="organ-column-heading">オルガンコラム</h2>
+<p class="about-section-text">季刊誌『風がなるとき』に連載のコラムをはじめ、礼拝音楽の背景やオルガンの響きにまつわる物語をお届けします。読み物として、また楽器への入り口として、どうぞゆっくりお楽しみください。</p>
+<p class="about-section-text">最新号やバックナンバーは、季刊誌『風がなるとき』のページからご覧いただけます。</p>
+<div class="about-section-cta">
+<a href="<?php echo esc_url( home_url( '/kazaganarutoki/' ) ); ?>">季刊誌『風がなるとき』を見る</a>
+<a href="<?php echo esc_url( oiwake_get_information_tab_url( 'report' ) ); ?>">活動報告を見る</a>
 </div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-<a class="organ-related-card" href="#">
-<div>
-<h3>オルガン教室</h3>
-<p>礼拝堂でレッスンを受けながら、基礎から丁寧に学べる教室です。演奏技術とともに、礼拝音楽への理解を深めます。</p>
 </div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-<a class="organ-related-card" href="#">
-<div>
-<h3>オルガンコラム</h3>
-<p>季刊誌「風がなるとき」連載のコラムを掲載。礼拝音楽の背景や、オルガンの響きにまつわる物語をお楽しみください。</p>
 </div>
-<span class="organ-related-card__arrow">コラム一覧<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
 </div>
+</section>
+
+<section class="about-section stagger-in">
+<div class="px-margin-safe">
+<div class="max-w-[1440px] mx-auto">
 <div class="gallery-page-back">
 <a class="gallery-page-back__link" href="<?php echo esc_url( home_url( '/about/' ) ); ?>">
 <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
 <span>教会案内に戻る</span>
 </a>
-</div>
 </div>
 </div>
 </div>

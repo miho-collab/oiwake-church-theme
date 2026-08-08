@@ -19,6 +19,7 @@ function oiwake_church_theme_setup() {
 	register_nav_menus(
 		array(
 			'header-menu' => __( 'ヘッダーナビゲーション', 'oiwake-church-theme' ),
+			'footer-menu' => __( 'フッターナビ', 'oiwake-church-theme' ),
 		)
 	);
 }
@@ -73,6 +74,31 @@ function oiwake_filter_information_main_query( $query ) {
 add_action( 'pre_get_posts', 'oiwake_filter_information_main_query' );
 
 /**
+ * Whether a nav item should render as the header CONTACT button.
+ *
+ * @param WP_Post $item Menu item.
+ * @return bool
+ */
+function oiwake_is_nav_contact_item( $item ) {
+	if ( ! ( $item instanceof WP_Post ) ) {
+		return false;
+	}
+
+	$classes = empty( $item->classes ) ? array() : (array) $item->classes;
+	if ( in_array( 'nav-contact', $classes, true ) || in_array( 'header-contact-btn', $classes, true ) ) {
+		return true;
+	}
+
+	$title = strtolower( trim( wp_strip_all_tags( (string) $item->title ) ) );
+	if ( in_array( $title, array( 'contact', 'お問い合わせ', 'お問合せ' ), true ) ) {
+		return true;
+	}
+
+	$path = (string) wp_parse_url( (string) $item->url, PHP_URL_PATH );
+	return ( '' !== $path && false !== stripos( $path, '/contact' ) );
+}
+
+/**
  * Desktop header navigation walker (preserves existing DOM / class structure).
  *
  * Top-level: Japanese title + English description (メニュー項目の「説明」欄).
@@ -117,11 +143,12 @@ class Oiwake_Header_Nav_Walker extends Walker_Nav_Menu {
 	 * @param int      $id     Current item ID.
 	 */
 	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
-		$classes   = empty( $item->classes ) ? array() : (array) $item->classes;
+		$classes      = empty( $item->classes ) ? array() : (array) $item->classes;
 		$has_children = in_array( 'menu-item-has-children', $classes, true );
+		$is_contact   = ( 0 === $depth && oiwake_is_nav_contact_item( $item ) );
 
 		if ( 0 === $depth ) {
-			$li_class = 'site-nav-item relative';
+			$li_class = $is_contact ? 'site-nav-item site-nav-item--contact relative' : 'site-nav-item relative';
 		} elseif ( 1 === $depth && $has_children ) {
 			$li_class = 'nav-dropdown-has-sub';
 		} else {
@@ -136,7 +163,9 @@ class Oiwake_Header_Nav_Walker extends Walker_Nav_Menu {
 		$atts['rel']    = ! empty( $item->xfn ) ? $item->xfn : '';
 		$atts['href']   = ! empty( $item->url ) ? $item->url : '';
 
-		if ( 0 === $depth ) {
+		if ( $is_contact ) {
+			$atts['class'] = 'site-nav-contact-btn header-contact-btn';
+		} elseif ( 0 === $depth ) {
 			$atts['class'] = 'site-nav-link hover:opacity-80 transition-opacity';
 		} elseif ( 1 === $depth ) {
 			$atts['class'] = 'nav-dropdown-mid';
@@ -159,8 +188,10 @@ class Oiwake_Header_Nav_Walker extends Walker_Nav_Menu {
 		$item_output  = isset( $args->before ) ? $args->before : '';
 		$item_output .= '<a' . $attributes . '>';
 
-		if ( 0 === $depth ) {
-			$en_label = trim( (string) $item->description );
+		if ( $is_contact ) {
+			$item_output .= '<span>' . esc_html( $title ) . '</span>';
+		} elseif ( 0 === $depth ) {
+			$en_label     = trim( (string) $item->description );
 			$item_output .= '<span class="site-nav-ja">' . esc_html( $title ) . '</span>';
 			if ( '' !== $en_label ) {
 				$item_output .= '<span class="site-nav-en">' . esc_html( $en_label ) . '</span>';
@@ -219,9 +250,10 @@ class Oiwake_Mobile_Nav_Walker extends Walker_Nav_Menu {
 	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
 		$classes      = empty( $item->classes ) ? array() : (array) $item->classes;
 		$has_children = in_array( 'menu-item-has-children', $classes, true );
+		$is_contact   = ( 0 === $depth && oiwake_is_nav_contact_item( $item ) );
 
 		if ( 0 === $depth ) {
-			$li_class = 'mobile-nav-item';
+			$li_class = $is_contact ? 'mobile-nav-item mobile-nav-item--contact' : 'mobile-nav-item';
 		} elseif ( 1 === $depth && $has_children ) {
 			$li_class = 'nav-dropdown-has-sub';
 		} else {
@@ -236,7 +268,9 @@ class Oiwake_Mobile_Nav_Walker extends Walker_Nav_Menu {
 		$atts['rel']    = ! empty( $item->xfn ) ? $item->xfn : '';
 		$atts['href']   = ! empty( $item->url ) ? $item->url : '';
 
-		if ( 0 === $depth ) {
+		if ( $is_contact ) {
+			$atts['class'] = 'site-nav-contact-btn header-contact-btn';
+		} elseif ( 0 === $depth ) {
 			$atts['class'] = 'site-nav-link hover:opacity-80 transition-opacity';
 		} elseif ( 1 === $depth ) {
 			$atts['class'] = 'nav-dropdown-mid';
@@ -259,8 +293,10 @@ class Oiwake_Mobile_Nav_Walker extends Walker_Nav_Menu {
 		$item_output  = isset( $args->before ) ? $args->before : '';
 		$item_output .= '<a' . $attributes . '>';
 
-		if ( 0 === $depth ) {
-			$en_label = trim( (string) $item->description );
+		if ( $is_contact ) {
+			$item_output .= '<span>' . esc_html( $title ) . '</span>';
+		} elseif ( 0 === $depth ) {
+			$en_label     = trim( (string) $item->description );
 			$item_output .= '<span class="site-nav-ja">' . esc_html( $title ) . '</span>';
 			if ( '' !== $en_label ) {
 				$item_output .= '<span class="site-nav-en">' . esc_html( $en_label ) . '</span>';
@@ -273,6 +309,170 @@ class Oiwake_Mobile_Nav_Walker extends Walker_Nav_Menu {
 		$item_output .= isset( $args->after ) ? $args->after : '';
 
 		$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+	}
+}
+
+/**
+ * Footer sitemap navigation walker.
+ *
+ * Top-level items are grouped into 3 columns:
+ * 1) first item (教会案内), 2) second item (礼拝・集会), 3) remaining items.
+ * Depth 1: .sitemap-md / Depth 2: .sitemap-sm
+ */
+class Oiwake_Footer_Nav_Walker extends Walker_Nav_Menu {
+
+	/**
+	 * Index among top-level items.
+	 *
+	 * @var int
+	 */
+	protected $top_index = 0;
+
+	/**
+	 * Current accordion panel id for the open top-level item.
+	 *
+	 * @var string
+	 */
+	protected $current_panel_id = '';
+
+	/**
+	 * Starts the list before the elements are added.
+	 *
+	 * @param string   $output Used to append additional content.
+	 * @param int      $depth  Depth of menu item.
+	 * @param stdClass $args   Menu arguments.
+	 */
+	public function start_lvl( &$output, $depth = 0, $args = null ) {
+		if ( 0 === $depth ) {
+			$panel_id = isset( $this->current_panel_id ) ? $this->current_panel_id : '';
+			$id_attr  = $panel_id ? ' id="' . esc_attr( $panel_id ) . '"' : '';
+			$output  .= '<ul class="sitemap-list footer-accordion-panel"' . $id_attr . '>';
+		} else {
+			$output .= '<ul class="sitemap-sublist">';
+		}
+	}
+
+	/**
+	 * Ends the list of after the elements are added.
+	 *
+	 * @param string   $output Used to append additional content.
+	 * @param int      $depth  Depth of menu item.
+	 * @param stdClass $args   Menu arguments.
+	 */
+	public function end_lvl( &$output, $depth = 0, $args = null ) {
+		$output .= '</ul>';
+	}
+
+	/**
+	 * Starts the element output.
+	 *
+	 * @param string   $output Used to append additional content.
+	 * @param WP_Post  $item   Menu item data object.
+	 * @param int      $depth  Depth of menu item.
+	 * @param stdClass $args   Menu arguments.
+	 * @param int      $id     Current item ID.
+	 */
+	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+		$classes      = empty( $item->classes ) ? array() : (array) $item->classes;
+		$has_children = in_array( 'menu-item-has-children', $classes, true );
+
+		$title = apply_filters( 'the_title', $item->title, $item->ID );
+		$title = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
+
+		$atts           = array();
+		$atts['title']  = ! empty( $item->attr_title ) ? $item->attr_title : '';
+		$atts['target'] = ! empty( $item->target ) ? $item->target : '';
+		$atts['rel']    = ! empty( $item->xfn ) ? $item->xfn : '';
+		$atts['href']   = ! empty( $item->url ) ? $item->url : '';
+
+		if ( 0 === $depth ) {
+			if ( 0 === $this->top_index ) {
+				$output .= '<li class="footer-sitemap-col footer-sitemap-col--1"><ul class="footer-sitemap-col-list">';
+			} elseif ( 1 === $this->top_index ) {
+				$output .= '</ul></li><li class="footer-sitemap-col footer-sitemap-col--2"><ul class="footer-sitemap-col-list">';
+			} elseif ( 2 === $this->top_index ) {
+				$output .= '</ul></li><li class="footer-sitemap-col footer-sitemap-col--3"><ul class="footer-sitemap-col-list">';
+			}
+
+			$li_classes = array( 'footer-sitemap-item' );
+			if ( $has_children ) {
+				$li_classes[] = 'footer-sitemap-item--has-children';
+				$li_classes[] = 'menu-item-has-children';
+			}
+			$output .= '<li class="' . esc_attr( implode( ' ', $li_classes ) ) . '">';
+
+			$panel_id               = 'footer-panel-' . (int) $item->ID;
+			$this->current_panel_id = $has_children ? $panel_id : '';
+
+			$link_atts          = $atts;
+			$link_atts['class'] = 'sitemap-lg footer-sitemap-link';
+			$link_attributes    = '';
+			foreach ( $link_atts as $attr => $value ) {
+				if ( empty( $value ) && 'href' !== $attr ) {
+					continue;
+				}
+				$value            = ( 'href' === $attr ) ? esc_url( (string) $value ) : esc_attr( (string) $value );
+				$link_attributes .= ' ' . $attr . '="' . $value . '"';
+			}
+
+			$item_output  = isset( $args->before ) ? $args->before : '';
+			$item_output .= '<div class="footer-sitemap-heading">';
+			$item_output .= '<a' . $link_attributes . '>' . esc_html( $title ) . '</a>';
+			$item_output .= '</div>';
+			$item_output .= isset( $args->after ) ? $args->after : '';
+
+			$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+			++$this->top_index;
+			return;
+		}
+
+		$li_class = ( 1 === $depth && $has_children ) ? 'sitemap-group' : '';
+		$output  .= $li_class ? '<li class="' . esc_attr( $li_class ) . '">' : '<li>';
+
+		$atts['class'] = ( 1 === $depth ) ? 'sitemap-md' : 'sitemap-sm';
+
+		$attributes = '';
+		foreach ( $atts as $attr => $value ) {
+			if ( empty( $value ) && 'href' !== $attr ) {
+				continue;
+			}
+			$value       = ( 'href' === $attr ) ? esc_url( (string) $value ) : esc_attr( (string) $value );
+			$attributes .= ' ' . $attr . '="' . $value . '"';
+		}
+
+		$item_output  = isset( $args->before ) ? $args->before : '';
+		$item_output .= '<a' . $attributes . '>' . esc_html( $title ) . '</a>';
+		$item_output .= isset( $args->after ) ? $args->after : '';
+
+		$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+	}
+
+	/**
+	 * Ends the element output.
+	 *
+	 * @param string   $output Used to append additional content.
+	 * @param WP_Post  $item   Page data object. Not used.
+	 * @param int      $depth  Depth of page. Not Used.
+	 * @param stdClass $args   An object of wp_nav_menu() arguments.
+	 */
+	public function end_el( &$output, $item, $depth = 0, $args = null ) {
+		$output .= "</li>\n";
+	}
+
+	/**
+	 * Traverse elements to create list from elements.
+	 *
+	 * @param array $elements  Menu items.
+	 * @param int   $max_depth Max depth.
+	 * @param mixed ...$args   Args.
+	 * @return string
+	 */
+	public function walk( $elements, $max_depth, ...$args ) {
+		$output = parent::walk( $elements, $max_depth, ...$args );
+		if ( $this->top_index > 0 ) {
+			$output .= '</ul></li>';
+		}
+		return $output;
 	}
 }
 
@@ -301,22 +501,24 @@ function oiwake_get_category_by_candidates( $candidates ) {
 }
 
 /**
- * News category (お知らせ).
+ * News category (ご案内).
  *
  * @return WP_Term|null
  */
 function oiwake_get_news_category() {
-	return oiwake_get_category_by_candidates( array( 'news', 'oshirase', 'お知らせ' ) );
+	return oiwake_get_category_by_candidates(
+		array( 'information', 'news', 'oshirase', 'ご案内', 'お知らせ' )
+	);
 }
 
 /**
- * Reports category (活動報告 / レポート).
+ * Reports category (活動報告).
  *
  * @return WP_Term|null
  */
 function oiwake_get_reports_category() {
 	return oiwake_get_category_by_candidates(
-		array( 'report', 'reports', 'katsudo-hokoku', '活動報告', 'レポート', '報告' )
+		array( 'event-report', 'report', 'reports', 'katsudo-hokoku', '活動報告', 'レポート', '報告' )
 	);
 }
 
@@ -326,7 +528,9 @@ function oiwake_get_reports_category() {
  * @return WP_Term|null
  */
 function oiwake_get_community_events_category() {
-	return oiwake_get_category_by_candidates( array( 'community_event' ) );
+	return oiwake_get_category_by_candidates(
+		array( 'community-info', 'community_news', 'community_event', 'community-event' )
+	);
 }
 
 /**
@@ -335,7 +539,9 @@ function oiwake_get_community_events_category() {
  * @return WP_Term|null
  */
 function oiwake_get_community_reports_category() {
-	return oiwake_get_category_by_candidates( array( 'community_report' ) );
+	return oiwake_get_category_by_candidates(
+		array( 'community-report', 'community_report' )
+	);
 }
 
 /**
@@ -434,8 +640,12 @@ function oiwake_get_information_tab_url( $tab = 'all' ) {
 	$base = oiwake_get_information_url();
 	$tab  = sanitize_key( $tab );
 
-	if ( 'news' === $tab || 'report' === $tab ) {
-		return add_query_arg( 'info', $tab, $base );
+	if ( 'news' === $tab ) {
+		return add_query_arg( 'info', 'news', $base ) . '#news-info';
+	}
+
+	if ( 'report' === $tab ) {
+		return add_query_arg( 'info', 'report', $base ) . '#news-report';
 	}
 
 	return remove_query_arg( array( 'info' ), $base );
@@ -533,7 +743,7 @@ function oiwake_get_information_active_tab( $forced = null ) {
 	$reports_cat = oiwake_get_reports_category();
 
 	// Only trust category conditionals when we have not replaced the main query with a custom loop.
-	// (Custom WP_Query with 'cat' makes is_category() true and would wrongly highlight お知らせ.)
+	// (Custom WP_Query with 'cat' makes is_category() true and would wrongly highlight ご案内.)
 	if ( is_category() && ! oiwake_is_information_listing_request() ) {
 		$current_id = (int) get_queried_object_id();
 		if ( $news_cat instanceof WP_Term && $current_id === (int) $news_cat->term_id ) {
@@ -548,7 +758,7 @@ function oiwake_get_information_active_tab( $forced = null ) {
 }
 
 /**
- * Whether a category term is the news (お知らせ) category.
+ * Whether a category term is the news (ご案内) category.
  *
  * @param WP_Term $term Category term.
  * @return bool
@@ -603,6 +813,40 @@ function oiwake_get_post_category_badge( $post_id = null ) {
 		'label' => $first->name,
 		'class' => 'news-card-cat-badge bg-surface-container text-on-surface-variant',
 	);
+}
+
+/**
+ * Plain-text excerpt for news / report cards.
+ *
+ * @param int|null $post_id Post ID.
+ * @param int      $length  Max characters. 0 = no limit.
+ * @return string
+ */
+function oiwake_get_card_excerpt( $post_id = null, $length = 180 ) {
+	$post = get_post( $post_id ? (int) $post_id : get_the_ID() );
+	if ( ! ( $post instanceof WP_Post ) ) {
+		return '';
+	}
+
+	$text = has_excerpt( $post ) ? $post->post_excerpt : $post->post_content;
+	$text = preg_replace( '/<!--more(.*?)?-->/', ' ', (string) $text );
+	$text = strip_shortcodes( (string) $text );
+	$text = wp_strip_all_tags( $text );
+	$text = html_entity_decode( $text, ENT_QUOTES, get_bloginfo( 'charset' ) );
+	$text = preg_replace( '/\s+/u', ' ', $text );
+	$text = trim( (string) $text );
+
+	if ( $length > 0 ) {
+		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
+			if ( mb_strlen( $text ) > $length ) {
+				return mb_substr( $text, 0, $length ) . '…';
+			}
+		} elseif ( strlen( $text ) > $length ) {
+			return substr( $text, 0, $length ) . '…';
+		}
+	}
+
+	return $text;
 }
 
 /**
@@ -703,5 +947,169 @@ function oiwake_the_posts_pagination() {
 	<?php endif; ?>
 </nav>
 	<?php
+}
+
+/**
+ * Normalize a PDF issue row into title / label / date / url.
+ *
+ * @param mixed $row Raw row.
+ * @return array{title:string,label:string,date:string,url:string}|null
+ */
+function oiwake_normalize_pdf_issue_row( $row ) {
+	if ( ! is_array( $row ) ) {
+		return null;
+	}
+
+	$title = isset( $row['title'] ) ? trim( (string) $row['title'] ) : '';
+	$label = isset( $row['label'] ) ? trim( (string) $row['label'] ) : ( isset( $row['issue_label'] ) ? trim( (string) $row['issue_label'] ) : '' );
+	$date  = isset( $row['date'] ) ? trim( (string) $row['date'] ) : '';
+	$url   = '';
+
+	if ( ! empty( $row['url'] ) ) {
+		$url = (string) $row['url'];
+	} elseif ( ! empty( $row['pdf'] ) ) {
+		$pdf = $row['pdf'];
+		if ( is_array( $pdf ) && ! empty( $pdf['url'] ) ) {
+			$url = (string) $pdf['url'];
+		} elseif ( is_numeric( $pdf ) ) {
+			$attachment_url = wp_get_attachment_url( (int) $pdf );
+			$url            = $attachment_url ? $attachment_url : '';
+		} else {
+			$url = (string) $pdf;
+		}
+	}
+
+	if ( '' === $title && '' === $label ) {
+		return null;
+	}
+
+	return array(
+		'title' => $title ? $title : $label,
+		'label' => $label,
+		'date'  => $date,
+		'url'   => $url,
+	);
+}
+
+/**
+ * Collect PDF issues from ACF / post meta for a given field key.
+ *
+ * @param int    $post_id   Post ID.
+ * @param string $field_key Field / meta key.
+ * @return array<int, array{title:string,label:string,date:string,url:string}>
+ */
+function oiwake_get_pdf_issues_from_meta( $post_id, $field_key ) {
+	$issues = array();
+
+	if ( $post_id && function_exists( 'have_rows' ) && have_rows( $field_key, $post_id ) ) {
+		while ( have_rows( $field_key, $post_id ) ) {
+			the_row();
+			$normalized = oiwake_normalize_pdf_issue_row(
+				array(
+					'title'       => function_exists( 'get_sub_field' ) ? get_sub_field( 'title' ) : '',
+					'issue_label' => function_exists( 'get_sub_field' ) ? get_sub_field( 'issue_label' ) : '',
+					'date'        => function_exists( 'get_sub_field' ) ? get_sub_field( 'date' ) : '',
+					'pdf'         => function_exists( 'get_sub_field' ) ? get_sub_field( 'pdf' ) : '',
+					'url'         => function_exists( 'get_sub_field' ) ? get_sub_field( 'url' ) : '',
+				)
+			);
+			if ( $normalized ) {
+				$issues[] = $normalized;
+			}
+		}
+	}
+
+	if ( empty( $issues ) && $post_id ) {
+		$meta = get_post_meta( $post_id, $field_key, true );
+		if ( is_string( $meta ) && '' !== $meta ) {
+			$decoded = json_decode( $meta, true );
+			if ( is_array( $decoded ) ) {
+				$meta = $decoded;
+			}
+		}
+		if ( is_array( $meta ) ) {
+			foreach ( $meta as $row ) {
+				$normalized = oiwake_normalize_pdf_issue_row( $row );
+				if ( $normalized ) {
+					$issues[] = $normalized;
+				}
+			}
+		}
+	}
+
+	return $issues;
+}
+
+/**
+ * Quarterly magazine PDFs: 季刊誌『風がなるとき』.
+ *
+ * Prefer ACF repeater / post meta `kazaganarutoki_issues`
+ * (sub fields: title, issue_label, date, pdf|url).
+ *
+ * @param int $post_id Optional post ID.
+ * @return array<int, array{title:string,label:string,date:string,url:string}>
+ */
+function oiwake_get_kazaganarutoki_issues( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_the_ID();
+	$issues  = oiwake_get_pdf_issues_from_meta( $post_id, 'kazaganarutoki_issues' );
+
+	if ( empty( $issues ) ) {
+		$defaults = array();
+		for ( $i = 1; $i <= 10; $i++ ) {
+			$n          = 40 - $i + 1;
+			$defaults[] = array(
+				'title' => sprintf( '第%d号', $n ),
+				'label' => sprintf( '季刊誌『風がなるとき』 第%d号', $n ),
+				'date'  => '',
+				'url'   => '',
+			);
+		}
+		$issues = apply_filters( 'oiwake_kazaganarutoki_issues_default', $defaults, $post_id );
+	}
+
+	return apply_filters( 'oiwake_kazaganarutoki_issues', $issues, $post_id );
+}
+
+/**
+ * Church anniversary magazine archive PDFs.
+ *
+ * Prefer ACF repeater / post meta `church_magazine_archive`
+ * (sub fields: title, issue_label, date, pdf|url).
+ *
+ * @param int $post_id Optional post ID.
+ * @return array<int, array{title:string,label:string,date:string,url:string}>
+ */
+function oiwake_get_church_magazine_archive_issues( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_the_ID();
+	$issues  = oiwake_get_pdf_issues_from_meta( $post_id, 'church_magazine_archive' );
+
+	if ( empty( $issues ) ) {
+		$issues = apply_filters(
+			'oiwake_church_magazine_archive_default',
+			array(
+				array(
+					'title' => '10周年記念誌',
+					'label' => '創立10周年',
+					'date'  => '',
+					'url'   => '',
+				),
+				array(
+					'title' => '20周年記念誌',
+					'label' => '創立20周年',
+					'date'  => '',
+					'url'   => '',
+				),
+				array(
+					'title' => '30周年記念誌',
+					'label' => '創立30周年',
+					'date'  => '',
+					'url'   => '',
+				),
+			),
+			$post_id
+		);
+	}
+
+	return apply_filters( 'oiwake_church_magazine_archive_issues', $issues, $post_id );
 }
 

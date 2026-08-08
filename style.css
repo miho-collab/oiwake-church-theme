@@ -4,7 +4,7 @@ Theme URI: https://oiwake-church.com/
 Author: Karuizawa Oiwake Church
 Author URI: https://oiwake-church.com/
 Description: WordPress theme for Karuizawa Oiwake Church (日本基督教団 軽井沢追分教会).
-Version: 1.0.0
+Version: 1.1.1
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -69,6 +69,32 @@ body {
       visibility: visible;
       transform: translate(-50%, 0);
     }
+    .site-nav-item--contact {
+      display: flex;
+      align-items: center;
+    }
+    .site-nav-contact-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 1.05rem;
+      border: 1px solid rgba(39, 52, 40, 0.35);
+      background: transparent;
+      font-family: "Work Sans", sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      line-height: 1.2;
+      text-transform: uppercase;
+      color: #273428;
+      white-space: nowrap;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .site-nav-contact-btn:hover {
+      background-color: #273428;
+      color: #faf9f6;
+      opacity: 1;
+    }
     .nav-dropdown {
       width: max-content;
       max-width: calc(100vw - 2.5rem);
@@ -114,11 +140,92 @@ body {
       background-color: #efeeeb;
       color: #273428;
     }
+    #information-section,
     #news-section,
     #services-section,
     #access-section,
-    #reports-section {
+    #reports-section,
+    #first-time-guide,
+    #first-visit,
+    #regular-service,
+    #regular-worship,
+    #praise-service,
+    #special-praise,
+    #sunday-service,
+    #service-info,
+    #church-magazine-archive,
+    #kazaganarutoki,
+    #organ-about,
+    #organ-trial,
+    #organ-class,
+    #organ-column,
+    #event-info,
+    #activity-report,
+    #news-info,
+    #news-report {
       scroll-margin-top: calc(var(--site-header-height, 7rem) + 1rem);
+    }
+    .access-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .access-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .access-guide {
+      font-family: "Work Sans", "Noto Sans JP", sans-serif;
+      font-size: 15px;
+      line-height: 1.85;
+      color: #434843;
+    }
+    .access-guide-title {
+      font-family: "Libre Caslon Text", "Noto Serif JP", serif;
+      font-size: 20px;
+      line-height: 1.45;
+      font-weight: 400;
+      color: #273428;
+      margin: 0 0 0.85rem;
+    }
+    .access-guide p {
+      margin: 0 0 0.7rem;
+    }
+    .access-guide-note {
+      font-size: 13px;
+      line-height: 1.75;
+      color: rgba(67, 72, 67, 0.88);
+    }
+    .access-parking-image {
+      display: block;
+      width: 40%;
+      max-width: 220px;
+      height: auto;
+      object-fit: cover;
+    }
+    .access-map-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      min-height: 18rem;
+    }
+    @media (min-width: 768px) {
+      .access-layout {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem 3rem;
+        align-items: stretch;
+      }
+      .access-map,
+      .access-map-frame {
+        height: 100%;
+        min-height: 0;
+        aspect-ratio: auto;
+      }
+      .access-map-frame {
+        min-height: 100%;
+      }
     }
     .site-header {
       transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.4s ease;
@@ -242,6 +349,9 @@ body {
     .mobile-nav-item .site-nav-link {
       text-align: left;
     }
+    .mobile-nav-item--contact .site-nav-contact-btn {
+      width: fit-content;
+    }
     .mobile-nav-dropdown {
       list-style: none;
       margin: 0.65rem 0 0;
@@ -265,11 +375,11 @@ body {
     }
     .footer-inner {
       width: 100%;
-      max-width: 1440px;
+      max-width: 72rem;
       margin-left: auto;
       margin-right: auto;
-      padding-top: 2.25rem;
-      padding-bottom: 1.25rem;
+      padding-top: 3.25rem;
+      padding-bottom: 2.25rem;
     }
     .footer-layout {
       display: grid;
@@ -279,8 +389,8 @@ body {
     }
     @media (min-width: 768px) {
       .footer-layout {
-        grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
-        gap: 3.5rem;
+        grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+        gap: 3rem;
       }
     }
     .footer-brand-column {
@@ -302,7 +412,7 @@ body {
       text-align: left;
     }
     .footer-detail-block {
-      margin-top: 1.25rem;
+      margin-top: 1.15rem;
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
@@ -311,16 +421,14 @@ body {
       line-height: 1.5;
       color: rgba(67, 72, 67, 0.88);
     }
-    .footer-contact-button-wrap {
+    .footer-brand-actions {
       margin-top: 1.25rem;
-      width: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.9rem;
     }
-    .footer-contact-button-wrap .footer-action-contact {
-      width: auto;
-      justify-content: flex-start;
-    }
-    .footer-brand-column .footer-action-link {
-      margin-top: 1rem;
+    .footer-action-link {
       display: inline-block;
       text-decoration: none;
       font-family: "Work Sans", sans-serif;
@@ -328,103 +436,17 @@ body {
       color: rgba(67, 72, 67, 0.75);
       transition: color 0.2s ease;
     }
-    .footer-brand-column .footer-action-link:hover {
+    .footer-action-link:hover {
       color: #273428;
     }
     .footer-follow-block {
-      margin-top: 0.9rem;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
     }
     .footer-social-icon {
       width: 2.5rem;
       height: 2.5rem;
       display: block;
-    }
-    .footer-sitemap {
-      min-width: 0;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    @media (min-width: 768px) {
-      .footer-sitemap {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 2.25rem;
-      }
-    }
-    .footer-sitemap-col {
-      min-width: 0;
-    }
-    .sitemap-lg {
-      display: block;
-      margin: 0 0 0.95rem;
-      font-family: "Libre Caslon Text", "Noto Serif JP", serif;
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.35;
-      color: #273428;
-    }
-    .sitemap-lg a {
-      color: inherit;
-      text-decoration: none;
-      transition: opacity 0.2s ease;
-    }
-    .sitemap-lg a:hover {
-      opacity: 0.75;
-    }
-    .sitemap-lg--spaced {
-      margin-top: 1.6rem;
-    }
-    .sitemap-list,
-    .sitemap-sublist {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-    .sitemap-list > li + li {
-      margin-top: 0.85rem;
-    }
-    .sitemap-list > li > .sitemap-sublist {
-      margin-top: 0.5rem;
-      margin-bottom: 0.15rem;
-    }
-    .sitemap-sublist > li + li {
-      margin-top: 0.35rem;
-    }
-    .sitemap-md {
-      display: block;
-      font-family: "Work Sans", sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 1.45;
-      color: #434843;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-    .sitemap-md::before {
-      content: "- ";
-    }
-    .sitemap-md:hover {
-      color: #273428;
-    }
-    .sitemap-sm {
-      display: flex;
-      align-items: flex-start;
-      font-family: "Work Sans", sans-serif;
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 1.45;
-      color: rgba(67, 72, 67, 0.62);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-    .sitemap-sm::before {
-      content: "・";
-      margin-right: 0.15rem;
-    }
-    .sitemap-sm:hover {
-      color: #273428;
     }
     .footer-action-contact {
       width: auto;
@@ -439,39 +461,213 @@ body {
       background-color: #273428;
       color: #faf9f6;
     }
+    .footer-sitemap {
+      min-width: 0;
+    }
+    .footer-sitemap-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.35rem;
+      width: auto;
+      max-width: 100%;
+      margin: 0 0 0.25rem;
+      padding: 0.15rem 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-family: "Work Sans", sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      line-height: 1.4;
+      text-transform: uppercase;
+      color: rgba(67, 72, 67, 0.78);
+      transition: color 0.2s ease;
+    }
+    .footer-sitemap-toggle:hover,
+    .footer-sitemap-toggle:focus-visible {
+      color: #273428;
+      outline: none;
+    }
+    .footer-sitemap-toggle-icon {
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: transform 0.28s ease;
+    }
+    .footer-sitemap.is-open .footer-sitemap-toggle-icon {
+      transform: rotate(180deg);
+    }
+    .footer-sitemap-panel {
+      margin-top: 0;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.28s ease, margin-top 0.28s ease;
+    }
+    .footer-sitemap.is-open .footer-sitemap-panel {
+      margin-top: 1.35rem;
+      max-height: 90rem;
+      opacity: 1;
+    }
+    .footer-sitemap-menu {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    .footer-sitemap-col,
+    .footer-sitemap-col-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      min-width: 0;
+    }
+    .footer-sitemap-col-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+    .footer-sitemap-item {
+      min-width: 0;
+    }
+    .footer-sitemap-heading {
+      display: flex;
+      align-items: center;
+      margin: 0 0 0.55rem;
+    }
+    .footer-sitemap-item:not(.footer-sitemap-item--has-children) > .footer-sitemap-heading {
+      margin-bottom: 0;
+    }
+    .footer-sitemap-heading .sitemap-lg,
+    .footer-sitemap-heading .footer-sitemap-link {
+      margin: 0;
+    }
+    .footer-accordion-btn {
+      display: none !important;
+    }
+    .footer-accordion-panel {
+      max-height: none !important;
+      opacity: 1 !important;
+      overflow: visible;
+      margin-top: 0 !important;
+    }
+    @media (min-width: 768px) {
+      .footer-sitemap-toggle {
+        pointer-events: none;
+        cursor: default;
+      }
+      .footer-sitemap-toggle-icon {
+        display: none;
+      }
+      .footer-sitemap-menu {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 2rem 2.5rem;
+        align-items: start;
+      }
+      .footer-sitemap.footer-sitemap--desktop-open .footer-sitemap-panel {
+        margin-top: 1.5rem;
+        max-height: none;
+        opacity: 1;
+        overflow: visible;
+      }
+    }
+    .sitemap-lg {
+      display: block;
+      margin: 0 0 0.55rem;
+      font-family: "Work Sans", "Noto Sans JP", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: #273428;
+    }
+    .sitemap-lg a,
+    a.sitemap-lg,
+    a.footer-sitemap-link {
+      color: inherit;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+    .sitemap-lg a:hover,
+    a.sitemap-lg:hover,
+    a.footer-sitemap-link:hover {
+      opacity: 0.72;
+    }
+    .sitemap-list,
+    .sitemap-sublist {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .sitemap-list {
+      padding-left: 0.75rem;
+    }
+    .sitemap-list > li + li {
+      margin-top: 0.4rem;
+    }
+    .sitemap-list > li > .sitemap-sublist {
+      margin-top: 0.3rem;
+      margin-bottom: 0.1rem;
+      padding-left: 0.75rem;
+    }
+    .sitemap-sublist > li + li {
+      margin-top: 0.25rem;
+    }
+    .sitemap-md {
+      display: block;
+      font-family: "Work Sans", "Noto Sans JP", sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.55;
+      color: rgba(67, 72, 67, 0.78);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .sitemap-md::before {
+      content: none;
+    }
+    .sitemap-md:hover {
+      color: #273428;
+    }
+    .sitemap-sm {
+      display: block;
+      font-family: "Work Sans", "Noto Sans JP", sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: rgba(67, 72, 67, 0.58);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .sitemap-sm::before {
+      content: none;
+    }
+    .sitemap-sm:hover {
+      color: #273428;
+    }
     .footer-copyright {
-      padding-top: 1.5rem;
+      margin-top: 2rem;
+      padding-top: 1.25rem;
       text-align: center;
+    }
+    @media (min-width: 768px) {
+      .footer-inner {
+        padding-top: 4rem;
+        padding-bottom: 2.5rem;
+      }
+      .footer-sitemap-menu {
+        gap: 1.5rem 1.75rem;
+      }
     }
     @media (max-width: 767px) {
       .footer-inner {
-        width: 100%;
-        max-width: 1440px;
+        padding-top: 2.75rem;
+        padding-bottom: 1.75rem;
       }
       .footer-layout {
         gap: 2rem;
-      }
-      .footer-brand-column .header-brand-link {
-        align-items: flex-start;
-      }
-      .footer-brand-column .header-brand-row {
-        justify-content: flex-start;
-      }
-      .footer-brand-column .header-brand-en,
-      .footer-brand-column,
-      .footer-detail-block {
-        text-align: left;
-      }
-      .footer-contact-button-wrap {
-        width: auto;
-      }
-      .footer-brand-column .footer-action-link {
-        margin-top: 1.2rem;
-      }
-      .footer-follow-block {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
       }
     }
     .header-brand-row {
@@ -639,6 +835,29 @@ body {
       color: #273428;
       font-weight: 400;
     }
+    .news-card-excerpt {
+      margin: 0;
+      font-family: "Work Sans", "Noto Sans JP", sans-serif;
+      font-size: 14px;
+      line-height: 1.75;
+      color: #434843;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 6;
+      overflow: hidden;
+    }
+    .news-card--text .news-card-date {
+      position: static;
+      color: #273428;
+      text-shadow: none;
+      margin-bottom: 0.15rem;
+    }
+    .news-card--text .news-card-date-bar {
+      background: #273428;
+    }
+    .news-card--text .news-card-content {
+      padding-top: 1.35rem;
+    }
     .news-card-more {
       position: absolute;
       right: -0.35rem;
@@ -689,6 +908,82 @@ body {
       font-weight: 400;
       color: #273428;
       margin: 0 0 2rem;
+    }
+
+.info-tab:focus,
+.info-tab:focus-visible,
+.info-tab:active {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+    .info-home-heading {
+      margin-bottom: 3.5rem;
+    }
+    .info-home-heading-title {
+      font-family: "Libre Caslon Text", "Noto Serif JP", "Work Sans", serif;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: #273428;
+      margin: 0;
+    }
+    .info-home-heading-title a,
+    .info-home-subtitle-link {
+      color: inherit;
+      text-decoration: none;
+    }
+    .info-home-heading-title a:hover,
+    .info-home-subtitle-link:hover {
+      opacity: 0.72;
+    }
+    .info-home-subtitle-link {
+      display: block;
+    }
+    .info-home-block {
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem 3rem;
+    }
+    .info-home-block + .info-home-block {
+      margin-top: 4.5rem;
+    }
+    .info-home-subtitle {
+      flex: 0 0 10.5rem;
+      width: 10.5rem;
+    }
+    .info-home-subtitle .news-section-title {
+      margin-bottom: 0;
+    }
+    .info-home-cards {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .info-home-cards .news-card-excerpt {
+      -webkit-line-clamp: 2;
+    }
+    @media (max-width: 767px) {
+      .info-home-heading {
+        margin-bottom: 2rem;
+      }
+      .info-home-heading-title {
+        font-size: 26px;
+      }
+      .info-home-block {
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .info-home-block + .info-home-block {
+        margin-top: 3rem;
+      }
+      .info-home-subtitle {
+        flex: none;
+        width: auto;
+      }
     }
     .service-card {
       height: 100%;
@@ -1015,6 +1310,39 @@ body {
       object-fit: cover;
       border-radius: 0.5rem;
     }
+
+.history-children {
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(196, 200, 193, 0.4);
+}
+
+.history-child-item {
+  max-width: 40rem;
+  padding-left: 1rem;
+  border-left: 3px solid rgba(95, 111, 93, 0.55);
+}
+
+.history-child-item .about-section-subtitle {
+  margin-bottom: 0.35rem;
+}
+
+.history-child-item__title {
+  margin: 0 0 0.65rem;
+  font-family: "Libre Caslon Text", "Noto Serif JP", serif;
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: #273428;
+}
+
+.history-child-item .about-section-text {
+  margin-bottom: 0.85rem;
+}
+
+.history-child-item .about-section-cta {
+  margin-top: 0;
+}
 
 .about-section-media--gallery {
       grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
@@ -1438,6 +1766,26 @@ body {
       color: #faf9f6;
     }
 
+.worship-section-sublink {
+      margin: 1rem 0 0;
+    }
+
+.worship-section-sublink a {
+      font-family: "Work Sans", "Noto Sans JP", sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #273428;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(39, 52, 40, 0.35);
+      padding-bottom: 0.1rem;
+      transition: opacity 0.2s ease, border-color 0.2s ease;
+    }
+
+.worship-section-sublink a:hover {
+      opacity: 0.7;
+      border-bottom-color: #273428;
+    }
+
 .welcome-steps {
       margin: 1.25rem 0 0;
       padding: 0;
@@ -1483,6 +1831,15 @@ body {
       font-size: 14px;
       line-height: 1.65;
       color: rgba(67, 72, 67, 0.88);
+    }
+
+#first-time-guide .welcome-faq-block,
+#first-visit .welcome-faq-block {
+      margin-top: 2.5rem;
+    }
+
+.welcome-faq-block .about-section-title {
+      font-size: 24px;
     }
 
 .welcome-faq {
@@ -2331,15 +2688,127 @@ body.gallery-lightbox-open {
       height: 220px;
     }
 
-.history-detail-archive {
-      margin-top: 4rem;
-      padding-top: 2.5rem;
-      border-top: 1px solid rgba(196, 200, 193, 0.38);
-    }
+.kazaganarutoki-issues {
+  margin-top: 2.5rem;
+  max-width: 48rem;
+}
+
+.kazaganarutoki-issues-lead {
+  margin-bottom: 0.5rem;
+}
+
+.kazaganarutoki-issues .pdf-issue-list {
+  margin-top: 1.5rem;
+}
 
 .history-detail-archive .history-archive-grid {
       margin-top: 1.25rem;
     }
+
+.organ-anchor-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.1rem;
+  margin: 0 0 0.25rem;
+}
+
+.organ-anchor-nav a {
+  font-family: "Work Sans", "Noto Sans JP", sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(67, 72, 67, 0.78);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(95, 111, 93, 0.35);
+  padding-bottom: 0.1rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.organ-anchor-nav a:hover {
+  color: #273428;
+  border-color: #273428;
+}
+
+.pdf-issue-list {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  border-top: 1px solid rgba(196, 200, 193, 0.45);
+}
+
+.pdf-issue-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid rgba(196, 200, 193, 0.4);
+}
+
+.pdf-issue-item__text {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.pdf-issue-item__label {
+  margin: 0 0 0.2rem;
+  font-family: "Work Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(67, 72, 67, 0.62);
+}
+
+.pdf-issue-item__title {
+  margin: 0;
+  font-family: "Libre Caslon Text", "Noto Serif JP", serif;
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: #273428;
+}
+
+.pdf-issue-item__date {
+  margin: 0.25rem 0 0;
+  font-family: "Work Sans", sans-serif;
+  font-size: 12px;
+  color: rgba(67, 72, 67, 0.7);
+}
+
+.pdf-issue-item__actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.pdf-issue-item__link {
+  font-family: "Work Sans", "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #273428;
+  text-decoration: none;
+  border: 1px solid rgba(39, 52, 40, 0.28);
+  padding: 0.4rem 0.75rem;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pdf-issue-item__link:hover {
+  background-color: #273428;
+  border-color: #273428;
+  color: #faf9f6;
+}
+
+.pdf-issue-item__pending {
+  font-family: "Work Sans", "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  color: rgba(67, 72, 67, 0.55);
+}
+
+@media (min-width: 768px) {
+  .pdf-issue-item {
+    padding: 1.05rem 0.15rem;
+  }
+}
 
 .news-detail-page {
       padding-top: calc(var(--site-header-height, 7rem) + 2.5rem);
@@ -2614,8 +3083,11 @@ body.gallery-lightbox-open {
       color: rgba(67, 72, 67, 0.85);
     }
 
-#regular-worship,
-    #special-praise {
+#regular-service,
+    #regular-worship,
+    #praise-service,
+    #special-praise,
+    #first-time-guide {
       scroll-margin-top: calc(var(--site-header-height, 7rem) + 1rem);
     }
 
@@ -2712,3 +3184,121 @@ body.gallery-lightbox-open {
   margin-top: 2rem;
   max-width: 48rem;
 }
+
+#privacy-policy-page,
+.privacy-policy-page {
+  padding-top: calc(var(--site-header-height, 7rem) + 2.5rem);
+  padding-bottom: 128px;
+  background-color: #ffffff;
+}
+
+.privacy-policy-inner {
+  max-width: 56rem;
+  width: 100%;
+}
+
+.privacy-policy-header .news-section-title {
+  margin-bottom: 1.5rem;
+}
+
+.privacy-policy-lead {
+  margin-bottom: 2.75rem;
+}
+
+.privacy-policy-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.privacy-policy-section {
+  margin: 0;
+  padding: 1.35rem 1.5rem 1.45rem;
+  border-left: 4px solid #5f6f5d;
+  background-color: rgba(95, 111, 93, 0.06);
+}
+
+.privacy-policy-section h2 {
+  font-family: "Libre Caslon Text", "Noto Serif JP", serif;
+  font-size: 20px;
+  line-height: 1.45;
+  font-weight: 400;
+  color: #273428;
+  margin: 0 0 0.75rem;
+}
+
+.privacy-policy-section p,
+.privacy-policy-section li {
+  font-family: "Work Sans", "Noto Sans JP", sans-serif;
+  font-size: 15px;
+  line-height: 1.9;
+  color: rgba(67, 72, 67, 0.92);
+}
+
+.privacy-policy-section p {
+  margin: 0;
+}
+
+.privacy-policy-section ul {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.privacy-policy-section li {
+  margin: 0 0 0.45rem;
+}
+
+.privacy-policy-section a {
+  color: #273428;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  transition: opacity 0.2s ease;
+}
+
+.privacy-policy-section a:hover {
+  opacity: 0.72;
+}
+
+.privacy-policy-footer {
+  margin-top: 3rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(196, 200, 193, 0.65);
+  text-align: right;
+}
+
+.privacy-policy-footer p {
+  margin: 0;
+  font-family: "Work Sans", "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(67, 72, 67, 0.88);
+}
+
+.privacy-policy-footer .privacy-policy-org {
+  margin-top: 0.35rem;
+  font-family: "Libre Caslon Text", "Noto Serif JP", serif;
+  font-size: 15px;
+  color: #273428;
+}
+
+@media (max-width: 767px) {
+  #privacy-policy-page,
+  .privacy-policy-page {
+    padding-top: calc(var(--site-header-height, 7rem) + 1.5rem);
+    padding-bottom: 64px;
+  }
+
+  .privacy-policy-section {
+    padding: 1.15rem 1.1rem 1.25rem;
+  }
+
+  .privacy-policy-section h2 {
+    font-size: 18px;
+  }
+
+  .privacy-policy-footer {
+    text-align: left;
+  }
+}
+
+

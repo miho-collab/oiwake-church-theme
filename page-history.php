@@ -7,6 +7,9 @@
  */
 
 get_header();
+
+$history_post_id = get_queried_object_id();
+$magazine_issues = oiwake_get_church_magazine_archive_issues( $history_post_id );
 ?>
 <main class="flex-1 w-full">
 <section class="about-page-section" data-header-zone="light">
@@ -26,7 +29,7 @@ get_header();
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="history-article">
-<h2 class="sr-only" id="history-detail-heading">追分教会の歩み</h2>
+<h2 class="sr-only" id="history-detail-heading">教会の歩み</h2>
 
 <div class="history-block">
 <div class="history-block-text">
@@ -102,28 +105,20 @@ get_header();
 </div>
 </div>
 
-<div class="history-detail-archive">
+<section class="history-detail-archive" id="church-magazine-archive" aria-labelledby="church-magazine-archive-heading">
 <p class="about-section-subtitle">Church Magazine Archive</p>
-<h3 class="about-section-title">教会誌アーカイブ</h3>
-<p class="about-section-text">創立10周年・20周年・30周年に発行した教会誌を、PDFでご覧いただけます（準備中のリンクは # です）。</p>
-<div class="history-archive-grid">
-<article class="history-archive-card">
-<h3>10周年記念誌</h3>
-<p>開設初期の証しや、礼拝堂建設に関わった方々の声を収録。</p>
-<div class="about-section-cta"><a href="#">PDFを読む</a></div>
-</article>
-<article class="history-archive-card">
-<h3>20周年記念誌</h3>
-<p>音楽礼拝の発展と地域とのつながりを写真とともに振り返ります。</p>
-<div class="about-section-cta"><a href="#">PDFを読む</a></div>
-</article>
-<article class="history-archive-card">
-<h3>30周年記念誌</h3>
-<p>次世代へ受け継ぐ祈りと、これからの教会のビジョンをまとめた特集号。</p>
-<div class="about-section-cta"><a href="#">PDFを読む</a></div>
-</article>
-</div>
-</div>
+<h2 class="about-section-title" id="church-magazine-archive-heading">教会誌アーカイブ</h2>
+<p class="about-section-text">創立記念に発行した教会誌を、PDFでご覧いただけます。</p>
+<?php
+get_template_part(
+	'template-parts/pdf',
+	'issue-list',
+	array(
+		'issues' => $magazine_issues,
+	)
+);
+?>
+</section>
 </div>
 </div>
 </section>

@@ -21,13 +21,12 @@ if ( $reports_category instanceof WP_Term ) {
 	$reports_query = new WP_Query( oiwake_get_posts_query_args( $reports_category, 6 ) );
 }
 
-$object_positions = array(
-	'40% center',
-	'65% 40%',
-	'center 60%',
-	'30% 70%',
-	'55% 30%',
-	'75% center',
+$home_card_args = array(
+	'variant'          => 'grid',
+	'show_thumbnail'   => false,
+	'show_excerpt'     => true,
+	'show_categories'  => false,
+	'show_badge'       => false,
 );
 ?>
 <main class="flex-1 w-full">
@@ -75,68 +74,80 @@ $object_positions = array(
 <p class="font-label-md text-label-md tracking-tighter opacity-80">Worship Hall</p>
 </div>
 </section>
-<!-- News Section -->
-<section id="news-section" class="py-section-gap px-margin-safe">
+<!-- Information Section -->
+<section id="information-section" class="py-section-gap px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
-<div>
-<p class="news-section-label">News</p>
-<h2 class="news-section-title">お知らせ</h2>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 news-grid">
-<?php if ( $news_query->have_posts() ) : ?>
-	<?php
-	$index = 0;
-	while ( $news_query->have_posts() ) :
-		$news_query->the_post();
-		get_template_part(
-			'template-parts/content',
-			'news-card',
-			array(
-				'variant'         => 'grid',
-				'delay_ms'        => $index * 80,
-				'object_position' => $object_positions[ $index % count( $object_positions ) ],
-			)
-		);
-		++$index;
-	endwhile;
-	wp_reset_postdata();
-	?>
-<?php else : ?>
-	<p class="font-body-md text-body-md text-on-surface-variant col-span-full">現在お知らせはありません。</p>
-<?php endif; ?>
-</div>
+	<div class="info-home-heading stagger-in">
+		<h2 class="info-home-heading-title">
+			<a href="<?php echo esc_url( oiwake_get_information_url() ); ?>">NEWS</a>
+		</h2>
+	</div>
+
+	<div id="news-section" class="info-home-block">
+		<div class="info-home-subtitle">
+			<a class="info-home-subtitle-link" href="<?php echo esc_url( oiwake_get_information_tab_url( 'news' ) ); ?>">
+				<p class="news-section-label">information</p>
+				<h3 class="news-section-title">ご案内</h3>
+			</a>
+		</div>
+		<div class="info-home-cards">
+		<?php if ( $news_query->have_posts() ) : ?>
+			<?php
+			$index = 0;
+			while ( $news_query->have_posts() ) :
+				$news_query->the_post();
+				get_template_part(
+					'template-parts/content',
+					'news-card',
+					array_merge(
+						$home_card_args,
+						array(
+							'delay_ms' => $index * 80,
+						)
+					)
+				);
+				++$index;
+			endwhile;
+			wp_reset_postdata();
+			?>
+		<?php else : ?>
+			<p class="font-body-md text-body-md text-on-surface-variant">現在ご案内はありません。</p>
+		<?php endif; ?>
+		</div>
+	</div>
+
+	<?php if ( $reports_query instanceof WP_Query && $reports_query->have_posts() ) : ?>
+	<div id="reports-section" class="info-home-block">
+		<div class="info-home-subtitle">
+			<a class="info-home-subtitle-link" href="<?php echo esc_url( oiwake_get_information_tab_url( 'report' ) ); ?>">
+				<p class="news-section-label">event report</p>
+				<h3 class="news-section-title">活動報告</h3>
+			</a>
+		</div>
+		<div class="info-home-cards">
+			<?php
+			$index = 0;
+			while ( $reports_query->have_posts() ) :
+				$reports_query->the_post();
+				get_template_part(
+					'template-parts/content',
+					'news-card',
+					array_merge(
+						$home_card_args,
+						array(
+							'delay_ms' => $index * 80,
+						)
+					)
+				);
+				++$index;
+			endwhile;
+			wp_reset_postdata();
+			?>
+		</div>
+	</div>
+	<?php endif; ?>
 </div>
 </section>
-<?php if ( $reports_query instanceof WP_Query && $reports_query->have_posts() ) : ?>
-<!-- Reports Section -->
-<section id="reports-section" class="py-section-gap px-margin-safe">
-<div class="max-w-[1440px] mx-auto">
-<div>
-<p class="news-section-label">Reports</p>
-<h2 class="news-section-title">レポート</h2>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 news-grid">
-	<?php
-	$index = 0;
-	while ( $reports_query->have_posts() ) :
-		$reports_query->the_post();
-		get_template_part(
-			'template-parts/content',
-			'news-card',
-			array(
-				'variant'         => 'grid',
-				'delay_ms'        => $index * 80,
-				'object_position' => $object_positions[ $index % count( $object_positions ) ],
-			)
-		);
-		++$index;
-	endwhile;
-	wp_reset_postdata();
-	?>
-</div>
-</div>
-</section>
-<?php endif; ?>
 <!-- Services Grid -->
 <section id="services-section" class="py-section-gap bg-surface-container-low px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
@@ -170,7 +181,7 @@ $object_positions = array(
 <div id="service-card-first-wrap" class="service-card-wrap md:row-span-2 group stagger-in" style="transition-delay: 400ms;">
 <div class="service-card bg-surface border border-outline-variant p-8 flex flex-col transition-colors group-hover:bg-primary-container group-hover:border-primary-container">
 <div class="service-card-header">
-<h3 class="font-headline-sm text-headline-sm text-primary group-hover:text-surface">初めての方へ</h3>
+<h3 class="font-headline-sm text-headline-sm text-primary group-hover:text-surface">初めて礼拝に出席される方へ</h3>
 <p class="font-label-md text-label-md text-secondary group-hover:text-on-primary-container mt-1">For First-Time Visitors</p>
 </div>
 <p class="service-card-body font-body-md text-body-md text-on-surface-variant group-hover:text-surface-container">
@@ -208,27 +219,30 @@ $object_positions = array(
 <!-- Location / Map Section -->
 <section id="access-section" class="py-section-gap px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
-<div class="mb-16">
+<div class="mb-10 md:mb-12">
 <p class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-4">Access</p>
 <h2 class="font-headline-lg text-headline-lg text-primary">アクセス</h2>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start">
-<div class="md:col-span-4 space-y-10 stagger-in">
+<div class="access-layout">
+<div class="access-copy stagger-in">
 <div>
-<p class="font-headline-sm text-headline-sm text-primary">住所</p>
-<p class="font-label-md text-label-md text-secondary uppercase tracking-widest mt-1 mb-3">Address</p>
 <p class="font-body-md text-body-md text-on-surface-variant">〒389-0115 長野県北佐久郡軽井沢町追分51-37</p>
 <p class="font-body-md text-body-md text-on-surface-variant mt-2">TEL: 0267-46-3312</p>
-<p class="font-body-md text-body-md text-on-surface-variant">Mail: <a class="hover:opacity-70 transition-opacity underline-offset-2 hover:underline" href="mailto:info@oiwake-church.com">info@oiwake-church.com</a></p>
 </div>
-<div>
-<p class="font-headline-sm text-headline-sm text-primary">駐車場</p>
-<p class="font-label-md text-label-md text-secondary uppercase tracking-widest mt-1 mb-3">Parking</p>
-<img alt="軽井沢追分教会の駐車場" class="w-full h-auto object-cover" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/parking.jpg"/>
+<div class="access-guide">
+<h3 class="access-guide-title">交通アクセスと駐車場のご案内</h3>
+<p>当教会へはお車、または電車・タクシーをご利用いただけます。</p>
+<p>お車： 上信越自動車道「佐久平スマートIC」または「佐久IC」より約15分</p>
+<p>電車： しなの鉄道「御代田駅」よりタクシーで約6分</p>
+<p>高速バス：池袋、新宿他、各地より軽井沢方面への高速バスが運行</p>
+<p>駐車場： 敷地内に20〜30台分の駐車スペースがございます。</p>
+<p class="access-guide-note">※特別讃美礼拝等の際には、開始30分前より案内係が駐車誘導を行います。</p>
+<p class="access-guide-note">※駐車スペースに限りがございますので、できる限りお乗り合わせの上お越しいただけますようご協力をお願い申し上げます。</p>
 </div>
+<img alt="軽井沢追分教会の駐車場" class="access-parking-image" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/parking.jpg"/>
 </div>
-<div class="md:col-span-8 stagger-in" style="transition-delay: 200ms;">
-<div class="aspect-video bg-surface-container-highest overflow-hidden relative">
+<div class="access-map stagger-in" style="transition-delay: 200ms;">
+<div class="access-map-frame bg-surface-container-highest overflow-hidden relative">
 <iframe
   allowfullscreen=""
   class="absolute inset-0 w-full h-full border-0"

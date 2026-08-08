@@ -17,7 +17,7 @@ get_header();
 	$categories    = get_the_category();
 	$thumb_url     = oiwake_get_post_thumbnail_url( get_the_ID(), 'large' );
 	$archive_url   = oiwake_get_news_archive_url();
-	$archive_label = __( 'お知らせ一覧に戻る', 'oiwake-church-theme' );
+	$archive_label = __( 'ご案内一覧に戻る', 'oiwake-church-theme' );
 
 	$adjacent_ids = array( get_the_ID() );
 	$nav_posts    = array();
@@ -84,7 +84,7 @@ get_header();
 		<div class="px-margin-safe">
 			<div class="news-detail-related-inner">
 				<p class="news-section-label">More News</p>
-				<h2 class="news-section-title" id="news-other-heading">ほかのお知らせ</h2>
+				<h2 class="news-section-title" id="news-other-heading">ほかのご案内</h2>
 				<?php if ( ! empty( $nav_posts ) ) : ?>
 					<div class="news-detail-related-grid">
 						<?php foreach ( $nav_posts as $nav_post ) : ?>

@@ -74,7 +74,7 @@ $card_opts = array(
 <p>こちらのページでは、これから開催されるイベント情報や、これまでの地域活動の報告をお届けします。どうぞお気軽にご覧ください。</p>
 </div>
 
-<section class="community-block" aria-labelledby="community-events-heading">
+<section class="community-block" id="event-info" aria-labelledby="community-events-heading">
 <h2 class="community-block-title" id="community-events-heading">イベント情報</h2>
 <div class="news-list">
 <?php if ( $events_query instanceof WP_Query && $events_query->have_posts() ) : ?>
@@ -104,7 +104,7 @@ $card_opts = array(
 </div>
 </section>
 
-<section class="community-block" aria-labelledby="community-reports-heading">
+<section class="community-block" id="activity-report" aria-labelledby="community-reports-heading">
 <h2 class="community-block-title" id="community-reports-heading">活動報告</h2>
 <div class="community-reports-grid">
 <?php if ( $reports_query instanceof WP_Query && $reports_query->have_posts() ) : ?>

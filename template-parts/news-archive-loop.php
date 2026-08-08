@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $args       = ( isset( $args ) && is_array( $args ) ) ? $args : array();
-$label_en   = isset( $args['label_en'] ) ? $args['label_en'] : 'Information';
-$title_ja   = isset( $args['title_ja'] ) ? $args['title_ja'] : 'INFORMATION';
+$label_en   = isset( $args['label_en'] ) ? $args['label_en'] : 'News';
+$title_ja   = isset( $args['title_ja'] ) ? $args['title_ja'] : 'NEWS';
 $active_tab = isset( $args['active_tab'] ) ? $args['active_tab'] : null;
 
 $object_positions = array(
@@ -46,7 +46,14 @@ $object_positions = array(
 			);
 			?>
 		</div>
-		<div class="news-list">
+		<?php
+		$resolved_tab = oiwake_get_information_active_tab( $active_tab );
+		$list_id      = 'news-list';
+		if ( 'report' === $resolved_tab ) {
+			$list_id = 'activity-report';
+		}
+		?>
+		<div class="news-list" id="<?php echo esc_attr( $list_id ); ?>">
 			<?php if ( have_posts() ) : ?>
 				<?php
 				$index = 0;

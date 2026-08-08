@@ -134,46 +134,16 @@ get_header();
 </div>
 </section>
 
-<section class="about-section about-section--gallery stagger-in" aria-labelledby="wedding-related-heading">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
-<div class="about-section-body">
-<p class="about-section-subtitle">More Gatherings</p>
-<h2 class="about-section-title" id="wedding-related-heading">ほかの集会・ご案内</h2>
-<p class="about-section-text">礼拝や初めての方へのご案内、聖書を学ぶ会など、関連するページもぜひご覧ください。</p>
-<div class="organ-related-grid">
-<a class="organ-related-card" href="<?php echo esc_url( home_url( '/service-sunday/' ) ); ?>">
-<div>
-<h3>主日礼拝のご案内</h3>
-<p>通常礼拝・特別讃美礼拝の概要と年間スケジュールをご案内しています。</p>
-</div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-<a class="organ-related-card" href="<?php echo esc_url( home_url( '/welcome/' ) ); ?>">
-<div>
-<h3>初めての方へ / Q&amp;A</h3>
-<p>教会が初めての方へ向けた案内と、よくあるご質問をまとめています。</p>
-</div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-<a class="organ-related-card" href="<?php echo esc_url( home_url( '/bible-study/' ) ); ?>">
-<div>
-<h3>聖書を学ぶ会</h3>
-<p>少人数で聖書を読み進める、和やかな学びの場についてご紹介しています。</p>
-</div>
-<span class="organ-related-card__arrow">詳しく見る<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-</a>
-</div>
 <div class="gallery-page-back">
-<a class="gallery-page-back__link" href="<?php echo esc_url( home_url( '/worship/' ) ); ?>">
+<a class="gallery-page-back__link" href="<?php echo esc_url( home_url( '/about/' ) ); ?>">
 <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-<span>礼拝・集会に戻る</span>
+<span>教会案内に戻る</span>
 </a>
 </div>
 </div>
 </div>
-</div>
-</section>
 
 </section>
 </main>

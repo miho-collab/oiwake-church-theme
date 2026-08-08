@@ -293,9 +293,9 @@
       const backButtonLabel = document.getElementById('back-button-label');
       if (backButton && backButtonLabel) {
         const fallbackHref = 'news.html';
-        const fallbackLabel = 'お知らせ一覧に戻る';
+        const fallbackLabel = 'ご案内一覧に戻る';
         const pageLabelMap = {
-          'news.html': 'お知らせ一覧',
+          'news.html': 'ご案内一覧',
           'community.html': '地域とのつながり',
           'about.html': '教会案内',
           'worship.html': '礼拝・集会のご案内'
@@ -493,4 +493,144 @@
           closeGalleryLightbox();
         }
       });
+
+      // Footer Site Map accordion
+      const footerSitemap = document.querySelector('.footer-sitemap');
+      const footerSitemapToggle = document.getElementById('footer-sitemap-toggle');
+      const footerSitemapPanel = document.getElementById('footer-sitemap-panel');
+      const footerDesktopMq = window.matchMedia('(min-width: 768px)');
+      let footerSitemapOpen = false;
+
+      function setFooterSitemapOpen(open, { syncHidden = true } = {}) {
+        if (!footerSitemap || !footerSitemapToggle || !footerSitemapPanel) return;
+
+        footerSitemapOpen = open;
+        footerSitemap.classList.toggle('is-open', open);
+        footerSitemapToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+        if (!syncHidden) return;
+
+        if (open) {
+          footerSitemapPanel.hidden = false;
+          return;
+        }
+
+        const onEnd = (event) => {
+          if (event.target !== footerSitemapPanel) return;
+          if (event.propertyName !== 'max-height' && event.propertyName !== 'opacity') return;
+          footerSitemapPanel.removeEventListener('transitionend', onEnd);
+          if (!footerSitemapOpen) {
+            footerSitemapPanel.hidden = true;
+          }
+        };
+        footerSitemapPanel.addEventListener('transitionend', onEnd);
+      }
+
+      function syncFooterSitemapToViewport() {
+        if (!footerSitemap) return;
+        if (footerDesktopMq.matches) {
+          footerSitemap.classList.add('footer-sitemap--desktop-open');
+          setFooterSitemapOpen(true, { syncHidden: true });
+          return;
+        }
+        footerSitemap.classList.remove('footer-sitemap--desktop-open');
+        setFooterSitemapOpen(false, { syncHidden: true });
+        footerSitemapPanel.hidden = true;
+      }
+
+      footerSitemapToggle?.addEventListener('click', () => {
+        const nextOpen = !footerSitemapOpen;
+        if (nextOpen && footerSitemapPanel) {
+          footerSitemapPanel.hidden = false;
+          // Force reflow so the open transition runs after un-hiding.
+          void footerSitemapPanel.offsetHeight;
+        }
+        setFooterSitemapOpen(nextOpen);
+      });
+
+      syncFooterSitemapToViewport();
+      if (typeof footerDesktopMq.addEventListener === 'function') {
+        footerDesktopMq.addEventListener('change', syncFooterSitemapToViewport);
+      } else if (typeof footerDesktopMq.addListener === 'function') {
+        footerDesktopMq.addListener(syncFooterSitemapToViewport);
+      }
+
+      // NEWS page: footer hash links (#news-info / #news-report) → tab + filtered posts
+      (function initNewsHashTabs() {
+        const tabsNav = document.querySelector('[data-news-tabs]');
+        const newsPage = document.querySelector('.news-page-section');
+        if (!tabsNav || !newsPage) return;
+
+        function tabFromHash(hash) {
+          if (hash === '#news-info') return 'news';
+          if (hash === '#news-report') return 'report';
+          return null;
+        }
+
+        function currentInfoParam() {
+          return new URL(window.location.href).searchParams.get('info') || '';
+        }
+
+        function setActiveTabAria(tab) {
+          tabsNav.querySelectorAll('[data-info-tab]').forEach((link) => {
+            const isActive = link.getAttribute('data-info-tab') === tab;
+            link.classList.toggle('border-primary', isActive);
+            link.classList.toggle('border-transparent', !isActive);
+            if (isActive) {
+              link.setAttribute('aria-current', 'page');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          });
+        }
+
+        function urlForTab(tab) {
+          const link = tabsNav.querySelector(`[data-info-tab="${tab}"]`);
+          if (!link) return null;
+          return new URL(link.href, window.location.origin);
+        }
+
+        function applyHashTab({ replace = true } = {}) {
+          const tab = tabFromHash(window.location.hash);
+          if (!tab) {
+            // No special hash: keep server-rendered tab (?info= or すべて).
+            const info = currentInfoParam();
+            setActiveTabAria(info === 'news' || info === 'report' ? info : 'all');
+            return;
+          }
+
+          setActiveTabAria(tab);
+
+          const expectedInfo = tab;
+          const currentInfo = currentInfoParam();
+          if (currentInfo === expectedInfo) {
+            return;
+          }
+
+          const target = urlForTab(tab);
+          if (!target) return;
+
+          // Ensure hash is present for bookmarking / footer custom links.
+          target.hash = tab === 'news' ? 'news-info' : 'news-report';
+          const next = target.pathname + target.search + target.hash;
+          if (replace) {
+            window.location.replace(next);
+          } else {
+            window.location.assign(next);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          applyHashTab({ replace: true });
+        });
+
+        // In case this script runs after DOMContentLoaded.
+        if (document.readyState !== 'loading') {
+          applyHashTab({ replace: true });
+        }
+
+        window.addEventListener('hashchange', () => {
+          applyHashTab({ replace: true });
+        });
+      })();
 })();

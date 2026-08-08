@@ -9,8 +9,8 @@
 
 get_header();
 
-$label_en   = 'Information';
-$title_ja   = 'INFORMATION';
+$label_en   = 'News';
+$title_ja   = 'NEWS';
 $active_tab = oiwake_get_information_active_tab();
 
 if ( is_category() ) {
@@ -19,10 +19,10 @@ if ( is_category() ) {
 	$current_id  = (int) get_queried_object_id();
 
 	if ( $news_cat instanceof WP_Term && $current_id === (int) $news_cat->term_id ) {
-		$label_en   = 'News';
+		$label_en   = 'information';
 		$active_tab = 'news';
 	} elseif ( $reports_cat instanceof WP_Term && $current_id === (int) $reports_cat->term_id ) {
-		$label_en   = 'Reports';
+		$label_en   = 'event report';
 		$active_tab = 'report';
 	} else {
 		$label_en = 'Category';
