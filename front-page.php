@@ -48,31 +48,80 @@ $home_card_args = array(
 </div>
 </div>
 </section>
-<!-- Full Width Forest Image -->
-<section id="top-image-section" data-header-zone="image" class="w-full relative overflow-hidden">
-<div id="top-image-layer">
-<img alt="軽井沢追分教会と森" class="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-1000 ease-in-out" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png"/>
-<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
-</div>
-<div class="absolute top-12 right-margin-safe top-image-quote text-surface text-right z-10 max-w-sm stagger-in" style="transition-delay: 200ms;">
-<p class="font-label-md text-label-md uppercase tracking-widest mb-4">Established 1993</p>
-<p class="font-body-md text-body-md italic leading-relaxed">
-            "琴を奏でて主に感謝をささげ<br>
-            十弦の琴を奏でてほめ歌をうたえ。<br>
-            3新しい歌を主に向かってうたい<br>
-            美しい調べと共に喜びの叫びをあげよ。"
-          </p>
-<p class="font-body-md text-body-md italic leading-relaxed mt-4">
-            Praise the Lord with the harp;<br>
-            make music to him on the ten-stringed lyre.<br>
-            Sing to him a new song;<br>
-            play skillfully, and shout for joy.
-          </p>
-</div>
-<div class="absolute bottom-12 right-margin-safe text-surface text-right z-10">
-<p class="font-headline-sm text-headline-sm">礼拝堂</p>
-<p class="font-label-md text-label-md tracking-tighter opacity-80">Worship Hall</p>
-</div>
+<!-- Scroll-driven hero (GSAP ScrollTrigger) -->
+<?php
+$theme_uri   = get_template_directory_uri();
+$hero_slides = array(
+	array(
+		'src' => $theme_uri . '/images/oiwake_top.webp',
+		'alt' => '緑に囲まれた軽井沢追分教会の外観',
+		'ja'  => '礼拝堂',
+		'en'  => 'Worship Hall',
+	),
+	array(
+		'src' => $theme_uri . '/images/oiwake_top_organ.webp',
+		'alt' => '軽井沢追分教会のパイプオルガン',
+		'ja'  => 'パイプオルガン',
+		'en'  => 'Pipe Organ',
+	),
+	array(
+		'src' => $theme_uri . '/images/oiwake_top_autumn.webp',
+		'alt' => '紅葉に彩られた軽井沢追分教会',
+		'ja'  => '秋の追分',
+		'en'  => 'Autumn at Oiwake',
+	),
+	array(
+		'src' => $theme_uri . '/images/oiwake_top_christmas.webp',
+		'alt' => 'クリスマスの礼拝の様子',
+		'ja'  => 'クリスマス礼拝',
+		'en'  => 'Christmas Worship',
+	),
+	array(
+		'src' => $theme_uri . '/images/oiwake_top_wedding.webp',
+		'alt' => '軽井沢追分教会での結婚式',
+		'ja'  => '結婚式',
+		'en'  => 'Weddings',
+	),
+);
+?>
+<section id="top-image-section" class="scroll-hero" data-header-zone="image" aria-label="メインビジュアル">
+	<div class="scroll-hero-media" aria-hidden="true">
+		<?php foreach ( $hero_slides as $index => $slide ) : ?>
+		<div class="scroll-hero-slide<?php echo 0 === $index ? ' is-active' : ''; ?>" data-slide="<?php echo (int) $index; ?>">
+			<img
+				alt="<?php echo esc_attr( $slide['alt'] ); ?>"
+				class="scroll-hero-image"
+				decoding="async"
+				<?php echo 0 === $index ? '' : 'loading="lazy" '; ?>
+				src="<?php echo esc_url( $slide['src'] ); ?>"
+			/>
+		</div>
+		<?php endforeach; ?>
+		<div class="scroll-hero-overlay"></div>
+	</div>
+	<div class="absolute right-margin-safe top-image-quote text-surface text-right z-10 max-w-sm">
+		<p class="font-label-md text-label-md uppercase tracking-widest mb-4">Established 1993</p>
+		<p class="font-body-md text-body-md italic leading-relaxed">
+			"琴を奏でて主に感謝をささげ<br>
+			十弦の琴を奏でてほめ歌をうたえ。<br>
+			3新しい歌を主に向かってうたい<br>
+			美しい調べと共に喜びの叫びをあげよ。"
+		</p>
+		<p class="font-body-md text-body-md italic leading-relaxed mt-4">
+			Praise the Lord with the harp;<br>
+			make music to him on the ten-stringed lyre.<br>
+			Sing to him a new song;<br>
+			play skillfully, and shout for joy.
+		</p>
+	</div>
+	<div class="scroll-hero-captions">
+		<?php foreach ( $hero_slides as $index => $slide ) : ?>
+		<div class="scroll-hero-caption<?php echo 0 === $index ? ' is-active' : ''; ?>" data-caption="<?php echo (int) $index; ?>">
+			<p class="scroll-hero-caption-ja font-headline-sm text-headline-sm"><?php echo esc_html( $slide['ja'] ); ?></p>
+			<p class="scroll-hero-caption-en font-label-md text-label-md tracking-tighter opacity-80"><?php echo esc_html( $slide['en'] ); ?></p>
+		</div>
+		<?php endforeach; ?>
+	</div>
 </section>
 <!-- Information Section -->
 <section id="information-section" class="py-section-gap px-margin-safe">

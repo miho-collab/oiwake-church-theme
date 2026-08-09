@@ -265,18 +265,85 @@
       window.addEventListener('resize', requestServiceCardHeightSync);
       requestServiceCardHeightSync();
 
-      // Parallax: only after image section reaches viewport
-      const topImageSection = document.getElementById('top-image-section');
-      const topImageLayer = document.getElementById('top-image-layer');
+      // Scroll-driven hero: pin + fade + ken-burns zoom (GSAP ScrollTrigger)
+      (function initScrollHero() {
+        const hero = document.getElementById('top-image-section');
+        if (!hero || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+          return;
+        }
 
-      function updateTopImageParallax() {
-        if (!topImageSection || !topImageLayer) return;
-        const scrolledIntoSection = Math.max(0, -topImageSection.getBoundingClientRect().top);
-        topImageLayer.style.transform = `translateY(${scrolledIntoSection * 0.1}px)`;
-      }
+        gsap.registerPlugin(ScrollTrigger);
 
-      window.addEventListener('scroll', updateTopImageParallax, { passive: true });
-      updateTopImageParallax();
+        const slides = gsap.utils.toArray('.scroll-hero-slide', hero);
+        const captions = gsap.utils.toArray('.scroll-hero-caption', hero);
+        const images = slides.map((slide) => slide.querySelector('.scroll-hero-image')).filter(Boolean);
+        if (slides.length < 2 || images.length !== slides.length) {
+          return;
+        }
+
+        gsap.set(slides, { opacity: (i) => (i === 0 ? 1 : 0) });
+        gsap.set(captions, { opacity: (i) => (i === 0 ? 1 : 0) });
+        gsap.set(images, {
+          scale: 1,
+          transformOrigin: '50% 50%',
+          force3D: true,
+        });
+
+        const getHeaderOffset = () => (siteHeader ? siteHeader.offsetHeight : 0);
+        const fadeDur = 0.9;
+        const holdDur = 0.7;
+        const lastIndex = slides.length - 1;
+        // hold → fade → hold → … → hold (final)
+        const transitionAt = (i) => holdDur + i * (fadeDur + holdDur);
+        const totalDur = (lastIndex + 1) * holdDur + lastIndex * fadeDur;
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: hero,
+            start: () => `top ${getHeaderOffset()}px`,
+            end: '+=2600',
+            pin: true,
+            scrub: 0.5,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: requestHeaderThemeUpdate,
+          },
+        });
+
+        // Crossfade after each dwell so photos/copy can be read, then switch crisply
+        for (let i = 0; i < lastIndex; i += 1) {
+          const at = transitionAt(i);
+          tl.to(slides[i], { opacity: 0, duration: fadeDur, ease: 'none' }, at);
+          tl.to(slides[i + 1], { opacity: 1, duration: fadeDur, ease: 'none' }, at);
+          if (captions[i] && captions[i + 1]) {
+            tl.to(captions[i], { opacity: 0, duration: fadeDur, ease: 'none' }, at);
+            tl.to(captions[i + 1], { opacity: 1, duration: fadeDur, ease: 'none' }, at);
+          }
+        }
+
+        // Keep timeline length explicit so the final hold is part of scrub progress
+        tl.addLabel('endHold', totalDur);
+
+        images.forEach((img, i) => {
+          const zoomStart = i === 0 ? 0 : transitionAt(i - 1);
+          const zoomEnd = i === lastIndex ? totalDur : transitionAt(i) + fadeDur;
+          const zoomDuration = Math.max(fadeDur, zoomEnd - zoomStart);
+
+          tl.fromTo(
+            img,
+            { scale: 1 },
+            { scale: 1.1, duration: zoomDuration, ease: 'none', force3D: true },
+            zoomStart
+          );
+        });
+
+        window.addEventListener('load', () => {
+          ScrollTrigger.refresh();
+        });
+        window.addEventListener('resize', () => {
+          ScrollTrigger.refresh();
+        });
+      })();
 
       // Mouse follow micro-interaction for hero headline
       const heroTitle = document.getElementById('hero-headline');
