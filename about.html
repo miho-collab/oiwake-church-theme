@@ -928,6 +928,29 @@
       gap: 2rem;
       align-items: start;
     }
+    .pastor-container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 1.5rem;
+      width: 100%;
+    }
+    .pastor-image {
+      display: block;
+      width: 150px;
+      flex-shrink: 0;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      object-position: 50% 18%;
+      border-radius: 0.5rem;
+    }
+    .pastor-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      min-width: 0;
+      flex: 1;
+    }
     .gallery-cta-row {
       max-width: 980px;
       margin: 1.25rem auto 0;
@@ -1775,18 +1798,18 @@
 <section class="about-section about-section--pastor stagger-in" aria-labelledby="about-pastor-heading">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
-<div class="about-pastor-layout">
-<div class="about-section-media">
-<img alt="牧師のポートレート" src="images/oiwake_top.png" style="object-position: 57% 40%;"/>
-</div>
 <div class="about-section-body">
 <p class="about-section-subtitle">Pastor</p>
 <h2 class="about-section-title" id="about-pastor-heading">牧師紹介</h2>
+<div class="pastor-container">
+<img class="pastor-image" alt="牧師のポートレート" src="images/paster.jpg"/>
+<div class="pastor-text">
 <p class="about-section-text">追分教会の礼拝と交わりを導く牧師は、聖書の言葉をていねいに分かち合いながら、一人ひとりの歩みに耳を傾けることを大切にしています。あたたかく穏やかな語り口は、初めて教会を訪れる方の緊張をやわらげ、自然に祈りへと心を向けさせます。</p>
 <p class="about-section-text">日々の礼拝だけでなく、結婚式や学びの会、地域との対話の場でも、教会の雰囲気そのものをつくる存在です。</p>
+</div>
+</div>
 <div class="about-section-cta">
 <a href="pastor.html">牧師紹介ページへ</a>
-</div>
 </div>
 </div>
 </div>

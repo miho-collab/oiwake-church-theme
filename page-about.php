@@ -83,18 +83,18 @@ get_header();
 <section class="about-section about-section--pastor stagger-in" aria-labelledby="about-pastor-heading">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
-<div class="about-pastor-layout">
-<div class="about-section-media">
-<img alt="牧師のポートレート" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 57% 40%;"/>
-</div>
 <div class="about-section-body">
 <p class="about-section-subtitle">Pastor</p>
 <h2 class="about-section-title" id="about-pastor-heading">牧師紹介</h2>
+<div class="pastor-container" style="display:flex;flex-direction:row;align-items:flex-start;gap:1.5rem;width:100%;">
+<img class="pastor-image" alt="牧師のポートレート" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/paster.jpg" style="width:150px;flex-shrink:0;aspect-ratio:3/4;object-fit:cover;object-position:50% 18%;border-radius:0.5rem;"/>
+<div class="pastor-text" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0.9rem;">
 <p class="about-section-text">追分教会の礼拝と交わりを導く牧師は、聖書の言葉をていねいに分かち合いながら、一人ひとりの歩みに耳を傾けることを大切にしています。あたたかく穏やかな語り口は、初めて教会を訪れる方の緊張をやわらげ、自然に祈りへと心を向けさせます。</p>
 <p class="about-section-text">日々の礼拝だけでなく、結婚式や学びの会、地域との対話の場でも、教会の雰囲気そのものをつくる存在です。</p>
+</div>
+</div>
 <div class="about-section-cta">
 <a href="<?php echo esc_url( home_url( '/pastor/' ) ); ?>">牧師紹介ページへ</a>
-</div>
 </div>
 </div>
 </div>
@@ -106,7 +106,7 @@ get_header();
 <div class="max-w-[1440px] mx-auto">
 <div class="about-section-body">
 <div class="organ-layout">
-<img alt="礼拝堂のパイプオルガン" class="organ-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 50% 30%;"/>
+<img alt="礼拝堂のパイプオルガン" class="organ-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 50% 30%;"/>
 <div class="organ-main-copy">
 <p class="about-section-subtitle">Pipe Organ</p>
 <h2 class="about-section-title" id="about-organ-heading">パイプオルガン</h2>
@@ -118,7 +118,7 @@ get_header();
 <div class="organ-links">
 <div class="organ-detail-grid">
 <article class="organ-detail-card">
-<img alt="パイプオルガンの図版" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 20% 68%;"/>
+<img alt="パイプオルガンの図版" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 20% 68%;"/>
 <div>
 <h3>パイプオルガンの説明と図</h3>
 <p>構造や音の出る仕組みを、図とやさしい解説でご案内します。</p>
@@ -126,7 +126,7 @@ get_header();
 </div>
 </article>
 <article class="organ-detail-card">
-<img alt="パイプオルガン体験会のイメージ" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 68% 60%;"/>
+<img alt="パイプオルガン体験会のイメージ" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 68% 60%;"/>
 <div>
 <h3>パイプオルガン体験会</h3>
 <p>実際に触れて音を出しながら、オルガンの魅力を体験できるプログラムです。</p>
@@ -134,7 +134,7 @@ get_header();
 </div>
 </article>
 <article class="organ-detail-card">
-<img alt="オルガン教室のレッスン風景" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 46% 50%;"/>
+<img alt="オルガン教室のレッスン風景" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 46% 50%;"/>
 <div>
 <h3>オルガン教室</h3>
 <p>礼拝堂でレッスンを受けながら、基礎から丁寧に学べる教室です。</p>
@@ -142,7 +142,7 @@ get_header();
 </div>
 </article>
 <article class="organ-detail-card">
-<img alt="オルガンコラムのイメージ" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 40% 45%;"/>
+<img alt="オルガンコラムのイメージ" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 40% 45%;"/>
 <div>
 <h3>オルガンコラム</h3>
 <p>季刊誌『風がなるとき』連載など、礼拝音楽とオルガンの響きにまつわる読み物です。</p>
@@ -161,7 +161,7 @@ get_header();
 <div class="max-w-[1440px] mx-auto">
 <div class="about-pastor-layout">
 <div class="about-section-media">
-<img alt="礼拝堂での結婚式イメージ" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 52% 40%;"/>
+<img alt="礼拝堂での結婚式イメージ" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_wedding.webp" style="object-position: 52% 40%;"/>
 </div>
 <div class="about-section-body">
 <p class="about-section-subtitle">Wedding</p>

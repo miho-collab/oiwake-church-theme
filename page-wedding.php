@@ -26,7 +26,7 @@ get_header();
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="worship-detail-layout">
-<img alt="礼拝堂での結婚式イメージ" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 52% 40%;"/>
+<img alt="礼拝堂での結婚式イメージ" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_wedding.webp" style="object-position: 52% 40%;"/>
 <div class="about-section-body">
 <p class="about-section-subtitle">Sacred Ceremony</p>
 <h2 class="about-section-title" id="wedding-feature-heading">教会挙式の魅力と特徴</h2>

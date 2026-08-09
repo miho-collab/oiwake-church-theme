@@ -32,7 +32,7 @@ get_header();
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="organ-layout organ-layout--feature">
-<img alt="礼拝堂のパイプオルガンとパイプの列" class="organ-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 50% 28%;"/>
+<img alt="礼拝堂のパイプオルガンとパイプの列" class="organ-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 50% 28%;"/>
 <div class="organ-main-copy">
 <p class="about-section-subtitle">Rieger Organ</p>
 <h2 class="about-section-title" id="organ-feature-heading">ライル社・北ドイツ様式のパイプオルガン</h2>
@@ -79,7 +79,7 @@ get_header();
 <p class="about-section-text">パイプオルガンは、ふいごが送り込む空気がパイプの中を振動させて音を出す楽器です。鍵盤を押すとバルブが開き、音栓（ストップ）の組み合わせによって音色や強さが変わります。以下の図版と解説で、音が生まれる仕組みをご覧ください。</p>
 <div class="organ-diagram-layout">
 <figure class="organ-diagram-figure">
-<img alt="パイプオルガンの構造図（プレースホルダー）" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 42% 50%;"/>
+<img alt="パイプオルガンの構造図（プレースホルダー）" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 42% 50%;"/>
 </figure>
 <div class="organ-parts-grid">
 <article class="organ-part-card">
@@ -113,7 +113,7 @@ get_header();
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="worship-detail-layout">
-<img alt="パイプオルガン体験会のイメージ" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 68% 60%;"/>
+<img alt="パイプオルガン体験会のイメージ" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 68% 60%;"/>
 <div class="about-section-body">
 <p class="about-section-subtitle">Organ Experience</p>
 <h2 class="about-section-title" id="organ-trial-heading">パイプオルガン体験会</h2>
@@ -133,7 +133,7 @@ get_header();
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
 <div class="worship-detail-layout">
-<img alt="オルガン教室のレッスン風景" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 46% 50%;"/>
+<img alt="オルガン教室のレッスン風景" class="worship-detail-portrait" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top_organ.webp" style="object-position: 46% 50%;"/>
 <div class="about-section-body">
 <p class="about-section-subtitle">Organ Class</p>
 <h2 class="about-section-title" id="organ-class-heading">オルガン教室</h2>

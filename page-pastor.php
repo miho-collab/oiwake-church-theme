@@ -25,18 +25,18 @@ get_header();
 <section class="about-section about-section--pastor stagger-in" aria-labelledby="pastor-profile-heading">
 <div class="px-margin-safe">
 <div class="max-w-[1440px] mx-auto">
-<div class="about-pastor-layout">
-<div class="about-section-media">
-<img alt="牧師のポートレート" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/oiwake_top.png" style="object-position: 57% 40%;"/>
-</div>
 <div class="about-section-body">
 <p class="about-section-subtitle">Profile</p>
 <h2 class="about-section-title" id="pastor-profile-heading">稲垣 壬午 牧師</h2>
+<div class="pastor-container" style="display:flex;flex-direction:row;align-items:flex-start;gap:1.5rem;width:100%;">
+<img class="pastor-image" alt="牧師のポートレート" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/paster.jpg" style="width:150px;flex-shrink:0;aspect-ratio:3/4;object-fit:cover;object-position:50% 18%;border-radius:0.5rem;"/>
+<div class="pastor-text" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0.9rem;">
 <p class="about-section-text">軽井沢追分教会の牧師として、主日礼拝、聖書の学び、結婚準備の面談、地域との対話の場を担当しています。神学の学びを土台にしつつ、日々の生活の言葉で福音を伝えることを大切にしています。</p>
 <p class="about-section-text">祈りと音楽、そして対話を通して、一人ひとりが安心して自分の歩みを語れる教会でありたいという願いから、礼拝後の交わりや初めての方向けの案内にも丁寧に時間をとっています。</p>
+</div>
+</div>
 <div class="about-section-cta">
 <a href="#">お問い合わせ</a>
-</div>
 </div>
 </div>
 </div>
