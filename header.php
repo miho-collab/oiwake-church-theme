@@ -118,13 +118,24 @@
 </div>
 <span class="header-brand-en font-body-md w-full">The United Church of Christ in Japan<br>Karuizawa Oiwake Church</span>
 </a>
+<?php
+$oiwake_contact_url  = home_url( '/contact/' );
+$oiwake_contact_page = get_page_by_path( 'contact' );
+if ( $oiwake_contact_page instanceof WP_Post ) {
+	$oiwake_contact_url = get_permalink( $oiwake_contact_page );
+}
+?>
+<div class="header-nav-cluster hidden lg:flex flex-col items-end gap-3 flex-1 min-w-0">
+<a class="site-nav-contact-btn header-contact-btn" href="<?php echo esc_url( $oiwake_contact_url ); ?>">
+<span>CONTACT</span>
+</a>
 <?php if ( has_nav_menu( 'header-menu' ) ) : ?>
 <?php
 wp_nav_menu(
 	array(
 		'theme_location' => 'header-menu',
 		'container'      => false,
-		'menu_class'     => 'hidden lg:flex flex-nowrap justify-end gap-x-5 xl:gap-x-8 items-center flex-1 min-w-0 list-none m-0 p-0',
+		'menu_class'     => 'flex flex-nowrap justify-end gap-x-5 xl:gap-x-8 items-center w-full list-none m-0 p-0',
 		'fallback_cb'    => false,
 		'depth'          => 3,
 		'walker'         => new Oiwake_Header_Nav_Walker(),
@@ -132,7 +143,7 @@ wp_nav_menu(
 );
 ?>
 <?php else : ?>
-<ul class="hidden lg:flex flex-nowrap justify-end gap-x-5 xl:gap-x-8 items-center flex-1 min-w-0 list-none m-0 p-0">
+<ul class="flex flex-nowrap justify-end gap-x-5 xl:gap-x-8 items-center w-full list-none m-0 p-0">
 <li class="site-nav-item relative">
 <a class="site-nav-link hover:opacity-80 transition-opacity" href="about.html">
 <span class="site-nav-ja">教会案内</span>
@@ -195,13 +206,9 @@ wp_nav_menu(
 <span class="site-nav-en">Access</span>
 </a>
 </li>
-<li class="site-nav-item site-nav-item--contact relative">
-<a class="site-nav-contact-btn header-contact-btn" href="contact.html">
-<span>CONTACT</span>
-</a>
-</li>
 </ul>
 <?php endif; ?>
+</div>
 
 <div class="flex lg:hidden items-center shrink-0">
 <button type="button" id="mobile-nav-toggle" class="mobile-nav-toggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav">
@@ -287,13 +294,11 @@ wp_nav_menu(
 <span class="site-nav-en">Access</span>
 </a>
 </li>
-<li class="mobile-nav-item mobile-nav-item--contact">
-<a class="site-nav-contact-btn header-contact-btn" href="contact.html">
-<span>CONTACT</span>
-</a>
-</li>
 </ul>
 <?php endif; ?>
+<a class="site-nav-contact-btn header-contact-btn mobile-nav-contact" href="<?php echo esc_url( $oiwake_contact_url ); ?>">
+<span>CONTACT</span>
+</a>
 </div>
 </nav>
 </header>

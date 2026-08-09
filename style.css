@@ -69,9 +69,8 @@ body {
       visibility: visible;
       transform: translate(-50%, 0);
     }
-    .site-nav-item--contact {
-      display: flex;
-      align-items: center;
+    .header-nav-cluster {
+      align-self: center;
     }
     .site-nav-contact-btn {
       display: inline-flex;
@@ -94,6 +93,10 @@ body {
       background-color: #273428;
       color: #faf9f6;
       opacity: 1;
+    }
+    .mobile-nav-contact {
+      width: fit-content;
+      margin-top: 1.25rem;
     }
     .nav-dropdown {
       width: max-content;
@@ -421,9 +424,6 @@ body {
     }
     .mobile-nav-item .site-nav-link {
       text-align: left;
-    }
-    .mobile-nav-item--contact .site-nav-contact-btn {
-      width: fit-content;
     }
     .mobile-nav-dropdown {
       list-style: none;

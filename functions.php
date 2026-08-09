@@ -94,7 +94,10 @@ function oiwake_filter_information_main_query( $query ) {
 add_action( 'pre_get_posts', 'oiwake_filter_information_main_query' );
 
 /**
- * Whether a nav item should render as the header CONTACT button.
+ * Whether a nav item is the Contact / CONTACT entry.
+ *
+ * CONTACT is rendered separately above the header menu, so matching items
+ * are excluded from the header-menu location.
  *
  * @param WP_Post $item Menu item.
  * @return bool
@@ -117,6 +120,30 @@ function oiwake_is_nav_contact_item( $item ) {
 	$path = (string) wp_parse_url( (string) $item->url, PHP_URL_PATH );
 	return ( '' !== $path && false !== stripos( $path, '/contact' ) );
 }
+
+/**
+ * Exclude Contact from the header nav (shown as a fixed CONTACT button above).
+ *
+ * @param array    $items Menu items.
+ * @param stdClass $args  Menu arguments.
+ * @return array
+ */
+function oiwake_exclude_contact_from_header_menu( $items, $args ) {
+	if ( empty( $args->theme_location ) || 'header-menu' !== $args->theme_location ) {
+		return $items;
+	}
+
+	$filtered = array();
+	foreach ( $items as $item ) {
+		if ( oiwake_is_nav_contact_item( $item ) ) {
+			continue;
+		}
+		$filtered[] = $item;
+	}
+
+	return $filtered;
+}
+add_filter( 'wp_nav_menu_objects', 'oiwake_exclude_contact_from_header_menu', 10, 2 );
 
 /**
  * Desktop header navigation walker (preserves existing DOM / class structure).
@@ -165,10 +192,9 @@ class Oiwake_Header_Nav_Walker extends Walker_Nav_Menu {
 	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
 		$classes      = empty( $item->classes ) ? array() : (array) $item->classes;
 		$has_children = in_array( 'menu-item-has-children', $classes, true );
-		$is_contact   = ( 0 === $depth && oiwake_is_nav_contact_item( $item ) );
 
 		if ( 0 === $depth ) {
-			$li_class = $is_contact ? 'site-nav-item site-nav-item--contact relative' : 'site-nav-item relative';
+			$li_class = 'site-nav-item relative';
 		} elseif ( 1 === $depth && $has_children ) {
 			$li_class = 'nav-dropdown-has-sub';
 		} else {
@@ -183,9 +209,7 @@ class Oiwake_Header_Nav_Walker extends Walker_Nav_Menu {
 		$atts['rel']    = ! empty( $item->xfn ) ? $item->xfn : '';
 		$atts['href']   = ! empty( $item->url ) ? $item->url : '';
 
-		if ( $is_contact ) {
-			$atts['class'] = 'site-nav-contact-btn header-contact-btn';
-		} elseif ( 0 === $depth ) {
+		if ( 0 === $depth ) {
 			$atts['class'] = 'site-nav-link hover:opacity-80 transition-opacity';
 		} elseif ( 1 === $depth ) {
 			$atts['class'] = 'nav-dropdown-mid';
@@ -208,9 +232,7 @@ class Oiwake_Header_Nav_Walker extends Walker_Nav_Menu {
 		$item_output  = isset( $args->before ) ? $args->before : '';
 		$item_output .= '<a' . $attributes . '>';
 
-		if ( $is_contact ) {
-			$item_output .= '<span>' . esc_html( $title ) . '</span>';
-		} elseif ( 0 === $depth ) {
+		if ( 0 === $depth ) {
 			$en_label     = trim( (string) $item->description );
 			$item_output .= '<span class="site-nav-ja">' . esc_html( $title ) . '</span>';
 			if ( '' !== $en_label ) {
@@ -270,10 +292,9 @@ class Oiwake_Mobile_Nav_Walker extends Walker_Nav_Menu {
 	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
 		$classes      = empty( $item->classes ) ? array() : (array) $item->classes;
 		$has_children = in_array( 'menu-item-has-children', $classes, true );
-		$is_contact   = ( 0 === $depth && oiwake_is_nav_contact_item( $item ) );
 
 		if ( 0 === $depth ) {
-			$li_class = $is_contact ? 'mobile-nav-item mobile-nav-item--contact' : 'mobile-nav-item';
+			$li_class = 'mobile-nav-item';
 		} elseif ( 1 === $depth && $has_children ) {
 			$li_class = 'nav-dropdown-has-sub';
 		} else {
@@ -288,9 +309,7 @@ class Oiwake_Mobile_Nav_Walker extends Walker_Nav_Menu {
 		$atts['rel']    = ! empty( $item->xfn ) ? $item->xfn : '';
 		$atts['href']   = ! empty( $item->url ) ? $item->url : '';
 
-		if ( $is_contact ) {
-			$atts['class'] = 'site-nav-contact-btn header-contact-btn';
-		} elseif ( 0 === $depth ) {
+		if ( 0 === $depth ) {
 			$atts['class'] = 'site-nav-link hover:opacity-80 transition-opacity';
 		} elseif ( 1 === $depth ) {
 			$atts['class'] = 'nav-dropdown-mid';
@@ -313,9 +332,7 @@ class Oiwake_Mobile_Nav_Walker extends Walker_Nav_Menu {
 		$item_output  = isset( $args->before ) ? $args->before : '';
 		$item_output .= '<a' . $attributes . '>';
 
-		if ( $is_contact ) {
-			$item_output .= '<span>' . esc_html( $title ) . '</span>';
-		} elseif ( 0 === $depth ) {
+		if ( 0 === $depth ) {
 			$en_label     = trim( (string) $item->description );
 			$item_output .= '<span class="site-nav-ja">' . esc_html( $title ) . '</span>';
 			if ( '' !== $en_label ) {
