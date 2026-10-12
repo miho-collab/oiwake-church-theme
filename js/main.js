@@ -265,83 +265,76 @@
       window.addEventListener('resize', requestServiceCardHeightSync);
       requestServiceCardHeightSync();
 
-      // Scroll-driven hero: pin + fade + ken-burns zoom (GSAP ScrollTrigger)
-      (function initScrollHero() {
+      // Hero slideshow: auto-advancing horizontal slides + ken-burns zoom
+      (function initHeroSlideshow() {
         const hero = document.getElementById('top-image-section');
-        if (!hero || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        const track = hero ? hero.querySelector('.scroll-hero-track') : null;
+        if (!track) {
           return;
         }
 
-        gsap.registerPlugin(ScrollTrigger);
-
-        const slides = gsap.utils.toArray('.scroll-hero-slide', hero);
-        const captions = gsap.utils.toArray('.scroll-hero-caption', hero);
-        const images = slides.map((slide) => slide.querySelector('.scroll-hero-image')).filter(Boolean);
-        if (slides.length < 2 || images.length !== slides.length) {
+        const slides = Array.from(track.querySelectorAll('.scroll-hero-slide'));
+        const captions = Array.from(hero.querySelectorAll('.scroll-hero-caption'));
+        if (slides.length < 2) {
           return;
         }
 
-        gsap.set(slides, { opacity: (i) => (i === 0 ? 1 : 0) });
-        gsap.set(captions, { opacity: (i) => (i === 0 ? 1 : 0) });
-        gsap.set(images, {
-          scale: 1,
-          transformOrigin: '50% 50%',
-          force3D: true,
-        });
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const holdMs = 5000;
+        // Must match the .scroll-hero-track transition duration in style.css
+        const slideMs = reduceMotion ? 0 : 1200;
 
-        const getHeaderOffset = () => (siteHeader ? siteHeader.offsetHeight : 0);
-        const fadeDur = 0.9;
-        const holdDur = 0.7;
-        const lastIndex = slides.length - 1;
-        // hold → fade → hold → … → hold (final)
-        const transitionAt = (i) => holdDur + i * (fadeDur + holdDur);
-        const totalDur = (lastIndex + 1) * holdDur + lastIndex * fadeDur;
+        // A trailing copy of the first slide keeps the last → first step moving left
+        const loopClone = slides[0].cloneNode(true);
+        loopClone.removeAttribute('data-slide');
+        track.appendChild(loopClone);
+        const frames = slides.concat(loopClone);
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: hero,
-            start: () => `top ${getHeaderOffset()}px`,
-            end: '+=2600',
-            pin: true,
-            scrub: 0.5,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            onUpdate: requestHeaderThemeUpdate,
-          },
-        });
+        let current = 0;
+        let timerId = null;
 
-        // Crossfade after each dwell so photos/copy can be read, then switch crisply
-        for (let i = 0; i < lastIndex; i += 1) {
-          const at = transitionAt(i);
-          tl.to(slides[i], { opacity: 0, duration: fadeDur, ease: 'none' }, at);
-          tl.to(slides[i + 1], { opacity: 1, duration: fadeDur, ease: 'none' }, at);
-          if (captions[i] && captions[i + 1]) {
-            tl.to(captions[i], { opacity: 0, duration: fadeDur, ease: 'none' }, at);
-            tl.to(captions[i + 1], { opacity: 1, duration: fadeDur, ease: 'none' }, at);
+        const moveTo = (index, animate) => {
+          track.classList.toggle('is-jumping', !animate);
+          track.style.transform = `translate3d(${-100 * index}%, 0, 0)`;
+        };
+
+        const setCaption = (index) => {
+          captions.forEach((caption, i) => caption.classList.toggle('is-active', i === index));
+        };
+
+        const startZoom = (index) => {
+          frames.forEach((frame, i) => frame.classList.toggle('is-zooming', i === index));
+        };
+
+        const advance = () => {
+          const next = current + 1;
+          moveTo(next, true);
+          setCaption(next % slides.length);
+          timerId = window.setTimeout(() => arrive(next), slideMs);
+        };
+
+        const arrive = (index) => {
+          current = index;
+          if (current === slides.length) {
+            current = 0;
+            moveTo(0, false);
+            void track.offsetWidth;
           }
-        }
+          startZoom(current);
+          timerId = window.setTimeout(advance, holdMs);
+        };
 
-        // Keep timeline length explicit so the final hold is part of scrub progress
-        tl.addLabel('endHold', totalDur);
-
-        images.forEach((img, i) => {
-          const zoomStart = i === 0 ? 0 : transitionAt(i - 1);
-          const zoomEnd = i === lastIndex ? totalDur : transitionAt(i) + fadeDur;
-          const zoomDuration = Math.max(fadeDur, zoomEnd - zoomStart);
-
-          tl.fromTo(
-            img,
-            { scale: 1 },
-            { scale: 1.1, duration: zoomDuration, ease: 'none', force3D: true },
-            zoomStart
-          );
+        document.addEventListener('visibilitychange', () => {
+          window.clearTimeout(timerId);
+          if (!document.hidden) {
+            timerId = window.setTimeout(advance, holdMs);
+          }
         });
 
-        window.addEventListener('load', () => {
-          ScrollTrigger.refresh();
-        });
-        window.addEventListener('resize', () => {
-          ScrollTrigger.refresh();
+        moveTo(0, false);
+        setCaption(0);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => arrive(0));
         });
       })();
 

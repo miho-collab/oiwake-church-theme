@@ -38,30 +38,10 @@ function oiwake_church_theme_enqueue_assets() {
 		$theme_version
 	);
 
-	$main_deps = array();
-
-	if ( is_front_page() ) {
-		wp_enqueue_script(
-			'gsap',
-			'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js',
-			array(),
-			'3.12.5',
-			true
-		);
-		wp_enqueue_script(
-			'gsap-scrolltrigger',
-			'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js',
-			array( 'gsap' ),
-			'3.12.5',
-			true
-		);
-		$main_deps[] = 'gsap-scrolltrigger';
-	}
-
 	wp_enqueue_script(
 		'oiwake-church-theme-main',
 		get_template_directory_uri() . '/js/main.js',
-		$main_deps,
+		array(),
 		$theme_version,
 		true
 	);

@@ -48,7 +48,7 @@ $home_card_args = array(
 </div>
 </div>
 </section>
-<!-- Scroll-driven hero (GSAP ScrollTrigger) -->
+<!-- Hero slideshow (auto-advancing horizontal slides) -->
 <?php
 $theme_uri   = get_template_directory_uri();
 $hero_slides = array(
@@ -86,17 +86,18 @@ $hero_slides = array(
 ?>
 <section id="top-image-section" class="scroll-hero" data-header-zone="image" aria-label="メインビジュアル">
 	<div class="scroll-hero-media" aria-hidden="true">
-		<?php foreach ( $hero_slides as $index => $slide ) : ?>
-		<div class="scroll-hero-slide<?php echo 0 === $index ? ' is-active' : ''; ?>" data-slide="<?php echo (int) $index; ?>">
-			<img
-				alt="<?php echo esc_attr( $slide['alt'] ); ?>"
-				class="scroll-hero-image"
-				decoding="async"
-				<?php echo 0 === $index ? '' : 'loading="lazy" '; ?>
-				src="<?php echo esc_url( $slide['src'] ); ?>"
-			/>
+		<div class="scroll-hero-track">
+			<?php foreach ( $hero_slides as $index => $slide ) : ?>
+			<div class="scroll-hero-slide" data-slide="<?php echo (int) $index; ?>">
+				<img
+					alt="<?php echo esc_attr( $slide['alt'] ); ?>"
+					class="scroll-hero-image"
+					decoding="async"
+					src="<?php echo esc_url( $slide['src'] ); ?>"
+				/>
+			</div>
+			<?php endforeach; ?>
 		</div>
-		<?php endforeach; ?>
 		<div class="scroll-hero-overlay"></div>
 	</div>
 	<div class="absolute right-margin-safe top-image-quote text-surface text-right z-10 max-w-sm">
