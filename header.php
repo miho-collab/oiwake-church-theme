@@ -126,9 +126,14 @@ if ( $oiwake_contact_page instanceof WP_Post ) {
 }
 ?>
 <div class="header-nav-cluster hidden lg:flex flex-col items-end gap-3 flex-1 min-w-0">
+<div class="header-cta-row">
 <a class="site-nav-contact-btn header-contact-btn" href="<?php echo esc_url( $oiwake_contact_url ); ?>">
 <span>CONTACT</span>
 </a>
+<a class="site-nav-contact-btn header-contact-btn" href="<?php echo esc_url( home_url( '/' ) ); ?>#access-section">
+<span>ACCESS</span>
+</a>
+</div>
 <?php if ( has_nav_menu( 'header-menu' ) ) : ?>
 <?php
 wp_nav_menu(
@@ -296,9 +301,14 @@ wp_nav_menu(
 </li>
 </ul>
 <?php endif; ?>
+<div class="header-cta-row mobile-nav-cta">
 <a class="site-nav-contact-btn header-contact-btn mobile-nav-contact" href="<?php echo esc_url( $oiwake_contact_url ); ?>">
 <span>CONTACT</span>
 </a>
+<a class="site-nav-contact-btn header-contact-btn mobile-nav-contact" href="<?php echo esc_url( home_url( '/' ) ); ?>#access-section">
+<span>ACCESS</span>
+</a>
+</div>
 </div>
 </nav>
 </header>

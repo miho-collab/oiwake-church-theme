@@ -4,7 +4,7 @@ Theme URI: https://oiwake-church.com/
 Author: Karuizawa Oiwake Church
 Author URI: https://oiwake-church.com/
 Description: WordPress theme for Karuizawa Oiwake Church (日本基督教団 軽井沢追分教会).
-Version: 1.1.2
+Version: 1.1.3
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -71,6 +71,21 @@ body {
     }
     .header-nav-cluster {
       align-self: center;
+    }
+    .header-cta-row {
+      display: inline-grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap: 0.75rem;
+    }
+    .header-cta-row .site-nav-contact-btn {
+      width: 100%;
+    }
+    .mobile-nav-cta {
+      margin-top: 1.25rem;
+    }
+    .mobile-nav-cta .mobile-nav-contact {
+      margin-top: 0;
     }
     .site-nav-contact-btn {
       display: inline-flex;
