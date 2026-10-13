@@ -259,8 +259,8 @@ $hero_slides = array(
 <p class="font-label-md text-label-md text-secondary group-hover:text-on-primary-container mt-1">Weddings</p>
 </div>
 <p class="service-card-body font-body-md text-body-md text-on-surface-variant group-hover:text-surface-container">
-                当教会で結婚式を挙げられる方には、信者かどうかを問わず、キリスト教講座の受講と礼拝への出席をお願いしています。
-              </p>
+	当教会で結婚式を挙げられる方には、信者かどうかを問わず、キリスト教講座の受講と礼拝への出席をお願いしています。
+</p>
 </div>
 </div>
 </div>
@@ -281,13 +281,16 @@ $hero_slides = array(
 </div>
 <div class="access-guide">
 <h3 class="access-guide-title">交通アクセスと駐車場のご案内</h3>
-<p>当教会へはお車、または電車・タクシーをご利用いただけます。</p>
-<p>お車： 上信越自動車道「佐久平スマートIC」または「佐久IC」より約15分</p>
-<p>電車： しなの鉄道「御代田駅」よりタクシーで約6分</p>
+<p>当教会へは車、または電車・タクシーをご利用ください。</p>
+<p>車： 上信越自動車道「佐久平スマートIC」または「佐久IC」より約15分</p>
+<p>電車： JR北陸新幹線「軽井沢駅」乗り換え、しなの鉄道「御代田駅」よりタクシーで約6分</p>
 <p>高速バス：池袋、新宿他、各地より軽井沢方面への高速バスが運行</p>
-<p>駐車場： 敷地内に20〜30台分の駐車スペースがございます。</p>
+<p>駐車場： 20〜30台
+<!--
+<p class="access-guide-note">※特別讃美礼拝等イベントの際には、混雑が予想されます。</p>
 <p class="access-guide-note">※特別讃美礼拝等の際には、開始30分前より案内係が駐車誘導を行います。</p>
 <p class="access-guide-note">※駐車スペースに限りがございますので、できる限りお乗り合わせの上お越しいただけますようご協力をお願い申し上げます。</p>
+-->
 </div>
 <img alt="軽井沢追分教会の駐車場" class="access-parking-image" src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/parking.jpg"/>
 </div>
