@@ -48,7 +48,7 @@ $home_card_args = array(
 </div>
 </div>
 </section>
-<!-- Hero slideshow (auto-advancing horizontal slides) -->
+<!-- Hero images (slow crossfade) -->
 <?php
 $theme_uri   = get_template_directory_uri();
 $hero_slides = array(
@@ -88,7 +88,7 @@ $hero_slides = array(
 	<div class="scroll-hero-media" aria-hidden="true">
 		<div class="scroll-hero-track">
 			<?php foreach ( $hero_slides as $index => $slide ) : ?>
-			<div class="scroll-hero-slide" data-slide="<?php echo (int) $index; ?>">
+			<div class="scroll-hero-slide<?php echo 0 === $index ? ' is-active' : ''; ?>" data-slide="<?php echo (int) $index; ?>">
 				<img
 					alt="<?php echo esc_attr( $slide['alt'] ); ?>"
 					class="scroll-hero-image"
@@ -100,20 +100,31 @@ $hero_slides = array(
 		</div>
 		<div class="scroll-hero-overlay"></div>
 	</div>
-	<div class="absolute right-margin-safe top-image-quote text-surface text-right z-10 max-w-sm">
-		<p class="font-label-md text-label-md uppercase tracking-widest mb-4">Established 1993</p>
+	<div class="absolute right-margin-safe top-image-quote text-surface text-right z-10">
+
 		<p class="font-body-md text-body-md italic leading-relaxed">
-			"琴を奏でて主に感謝をささげ<br>
-			十弦の琴を奏でてほめ歌をうたえ。<br>
-			3新しい歌を主に向かってうたい<br>
-			美しい調べと共に喜びの叫びをあげよ。"
+			"全地よ、主に向かって喜びの叫びをあげよ。<br>
+			喜び祝い、主に仕え喜び歌って御前に進み出よ。"
 		</p>
+		<p class="top-image-quote-cite mb-4">詩編 100:1~2</p>
 		<p class="font-body-md text-body-md italic leading-relaxed mt-4">
-			Praise the Lord with the harp;<br>
-			make music to him on the ten-stringed lyre.<br>
-			Sing to him a new song;<br>
-			play skillfully, and shout for joy.
+			Shout for joy to the Lord,<br>
+			all the earth.<br>
+			Worship the Lord with gladness;<br>
+			come before him with joyful songs.
 		</p>
+		<p class="top-image-quote-cite mb-4">Psalm 100:1~2</p>
+	</div>
+	<div class="scroll-hero-dots" role="group" aria-label="表示する写真">
+		<?php foreach ( $hero_slides as $index => $slide ) : ?>
+		<button
+			type="button"
+			class="scroll-hero-dot<?php echo 0 === $index ? ' is-active' : ''; ?>"
+			data-hero-dot="<?php echo (int) $index; ?>"
+			aria-label="<?php echo esc_attr( $slide['ja'] ); ?>"
+			<?php echo 0 === $index ? 'aria-current="true"' : ''; ?>
+		></button>
+		<?php endforeach; ?>
 	</div>
 	<div class="scroll-hero-captions">
 		<?php foreach ( $hero_slides as $index => $slide ) : ?>

@@ -265,8 +265,8 @@
       window.addEventListener('resize', requestServiceCardHeightSync);
       requestServiceCardHeightSync();
 
-      // Hero slideshow: auto-advancing horizontal slides + ken-burns zoom
-      (function initHeroSlideshow() {
+      // Hero images: slow crossfade. The next photo fades in over the current one.
+      (function initHeroCrossfade() {
         const hero = document.getElementById('top-image-section');
         const track = hero ? hero.querySelector('.scroll-hero-track') : null;
         if (!track) {
@@ -275,67 +275,87 @@
 
         const slides = Array.from(track.querySelectorAll('.scroll-hero-slide'));
         const captions = Array.from(hero.querySelectorAll('.scroll-hero-caption'));
+        const dots = Array.from(hero.querySelectorAll('.scroll-hero-dot'));
         if (slides.length < 2) {
           return;
         }
 
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const holdMs = 5000;
-        // Must match the .scroll-hero-track transition duration in style.css
-        const slideMs = reduceMotion ? 0 : 1200;
+        const holdMs = 3000;
+        // Must match the .scroll-hero-slide opacity transition in style.css
+        const fadeMs = reduceMotion ? 0 : 3200;
 
-        // A trailing copy of the first slide keeps the last → first step moving left
-        const loopClone = slides[0].cloneNode(true);
-        loopClone.removeAttribute('data-slide');
-        track.appendChild(loopClone);
-        const frames = slides.concat(loopClone);
-
-        let current = 0;
+        let current = slides.findIndex((slide) => slide.classList.contains('is-active'));
+        if (current < 0) {
+          current = 0;
+        }
         let timerId = null;
-
-        const moveTo = (index, animate) => {
-          track.classList.toggle('is-jumping', !animate);
-          track.style.transform = `translate3d(${-100 * index}%, 0, 0)`;
-        };
+        let fadeTimerId = null;
 
         const setCaption = (index) => {
           captions.forEach((caption, i) => caption.classList.toggle('is-active', i === index));
+          dots.forEach((dot, i) => {
+            const selected = i === index;
+            dot.classList.toggle('is-active', selected);
+            if (selected) {
+              dot.setAttribute('aria-current', 'true');
+            } else {
+              dot.removeAttribute('aria-current');
+            }
+          });
         };
 
-        const startZoom = (index) => {
-          frames.forEach((frame, i) => frame.classList.toggle('is-zooming', i === index));
+        const scheduleAdvance = (delay) => {
+          window.clearTimeout(timerId);
+          timerId = window.setTimeout(advance, delay);
+        };
+
+        const show = (index) => {
+          slides.forEach((slide, i) => {
+            slide.classList.toggle('is-leaving', i === current && i !== index);
+            slide.classList.toggle('is-active', i === index);
+            if (i === index) {
+              slide.classList.add('is-zooming');
+            }
+          });
+          setCaption(index);
+          window.clearTimeout(fadeTimerId);
+          fadeTimerId = window.setTimeout(() => {
+            slides.forEach((slide, i) => {
+              slide.classList.remove('is-leaving');
+              if (i !== index) {
+                slide.classList.remove('is-zooming');
+              }
+            });
+          }, fadeMs);
+          current = index;
         };
 
         const advance = () => {
-          const next = current + 1;
-          moveTo(next, true);
-          setCaption(next % slides.length);
-          timerId = window.setTimeout(() => arrive(next), slideMs);
+          show((current + 1) % slides.length);
+          scheduleAdvance(holdMs + fadeMs);
         };
 
-        const arrive = (index) => {
-          current = index;
-          if (current === slides.length) {
-            current = 0;
-            moveTo(0, false);
-            void track.offsetWidth;
-          }
-          startZoom(current);
-          timerId = window.setTimeout(advance, holdMs);
-        };
+        dots.forEach((dot) => {
+          dot.addEventListener('click', () => {
+            const index = Number(dot.dataset.heroDot);
+            if (!Number.isInteger(index) || index === current || index < 0 || index >= slides.length) {
+              return;
+            }
+            show(index);
+            scheduleAdvance(holdMs + fadeMs);
+          });
+        });
 
         document.addEventListener('visibilitychange', () => {
           window.clearTimeout(timerId);
           if (!document.hidden) {
-            timerId = window.setTimeout(advance, holdMs);
+            scheduleAdvance(holdMs);
           }
         });
 
-        moveTo(0, false);
-        setCaption(0);
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => arrive(0));
-        });
+        show(current);
+        scheduleAdvance(holdMs);
       })();
 
       // Mouse follow micro-interaction for hero headline
