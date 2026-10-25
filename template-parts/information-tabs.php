@@ -16,10 +16,8 @@ $active_tab = oiwake_get_information_active_tab( $active_tab );
 $all_url      = oiwake_get_information_tab_url( 'all' );
 $news_url     = oiwake_get_information_tab_url( 'news' );
 $report_url   = oiwake_get_information_tab_url( 'report' );
-$news_cat     = oiwake_get_news_category();
-$reports_cat  = oiwake_get_reports_category();
-$news_label   = ( $news_cat instanceof WP_Term ) ? $news_cat->name : 'ご案内';
-$report_label = ( $reports_cat instanceof WP_Term ) ? $reports_cat->name : '活動報告';
+$news_label   = 'ご案内';
+$report_label = '活動報告';
 
 $tab_class      = 'info-tab inline-flex items-center px-1 pb-3 font-label-md text-label-md tracking-[0.08em] transition-colors border-b-2 text-on-surface-variant hover:text-primary outline-none focus:outline-none focus-visible:outline-none';
 $active_class   = 'border-primary';

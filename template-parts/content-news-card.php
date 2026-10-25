@@ -18,12 +18,53 @@ $show_badge      = ! isset( $args['show_badge'] ) || (bool) $args['show_badge'];
 $show_thumbnail  = ! isset( $args['show_thumbnail'] ) || (bool) $args['show_thumbnail'];
 $show_excerpt    = isset( $args['show_excerpt'] ) && (bool) $args['show_excerpt'];
 
+$is_info_post   = oiwake_is_announcement();
+$is_report_post = oiwake_is_activity_report();
+
+$flyer_url    = '';
+$info_desc    = '';
+$report_thumb = '';
+if ( $is_info_post && function_exists( 'get_field' ) ) {
+	$flyer = get_field( 'info_flyer_front' );
+	if ( is_array( $flyer ) && ! empty( $flyer['sizes']['large'] ) ) {
+		$flyer_url = $flyer['sizes']['large'];
+	} elseif ( is_array( $flyer ) && ! empty( $flyer['url'] ) ) {
+		$flyer_url = $flyer['url'];
+	} elseif ( is_numeric( $flyer ) ) {
+		$flyer_url = (string) wp_get_attachment_image_url( (int) $flyer, 'large' );
+	}
+
+	$raw_desc = get_field( 'info_desc' );
+	if ( is_string( $raw_desc ) ) {
+		$info_desc = trim( wp_strip_all_tags( str_replace( array( '<br>', '<br/>', '<br />' ), "\n", $raw_desc ) ) );
+	}
+}
+
+if ( $is_report_post && function_exists( 'get_field' ) ) {
+	$raw_desc = get_field( 'report_body' );
+	if ( is_string( $raw_desc ) ) {
+		$info_desc = trim( wp_strip_all_tags( str_replace( array( '<br>', '<br/>', '<br />' ), "\n", $raw_desc ) ) );
+	}
+
+	$report_image = get_field( 'report_image_1' );
+	if ( is_array( $report_image ) && ! empty( $report_image['sizes']['large'] ) ) {
+		$report_thumb = $report_image['sizes']['large'];
+	} elseif ( is_array( $report_image ) && ! empty( $report_image['url'] ) ) {
+		$report_thumb = $report_image['url'];
+	} elseif ( is_numeric( $report_image ) ) {
+		$report_thumb = (string) wp_get_attachment_image_url( (int) $report_image, 'large' );
+	}
+}
+
 $card_class = 'news-card stagger-in';
 if ( 'list' === $variant ) {
 	$card_class .= ' news-card--list';
 }
 if ( ! $show_thumbnail ) {
 	$card_class .= ' news-card--text';
+}
+if ( $flyer_url ) {
+	$card_class .= ' news-card--flyer';
 }
 
 $style_attr = '';
@@ -32,15 +73,23 @@ if ( $delay_ms > 0 ) {
 }
 
 $thumb_url  = $show_thumbnail ? oiwake_get_post_thumbnail_url( get_the_ID(), 'large' ) : '';
-$year       = get_the_date( 'Y.' );
-$md         = get_the_date( 'n/j' );
+if ( $show_thumbnail && '' !== $report_thumb && ! has_post_thumbnail() ) {
+	$thumb_url = $report_thumb;
+}
+$date_parts = oiwake_get_display_date_parts( get_the_ID() );
+$year       = $date_parts['year'];
+$md         = $date_parts['md'];
 $badge      = $show_badge ? oiwake_get_post_category_badge( get_the_ID() ) : null;
 $categories = $show_categories ? get_the_category() : array();
 $excerpt    = $show_excerpt ? oiwake_get_card_excerpt( get_the_ID(), 200 ) : '';
 ?>
 <article class="<?php echo esc_attr( $card_class ); ?>"<?php echo $style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<a class="news-card-link" href="<?php the_permalink(); ?>">
-		<?php if ( $show_thumbnail ) : ?>
+		<?php if ( $flyer_url && $show_thumbnail ) : ?>
+			<div class="news-card-thumb news-card-thumb--flyer">
+				<img alt="" src="<?php echo esc_url( $flyer_url ); ?>"/>
+			</div>
+		<?php elseif ( $show_thumbnail ) : ?>
 			<div class="news-card-thumb">
 				<img alt="" src="<?php echo esc_url( $thumb_url ); ?>" style="object-position: <?php echo esc_attr( $object_position ); ?>;"/>
 				<div class="news-card-date">
@@ -56,9 +105,22 @@ $excerpt    = $show_excerpt ? oiwake_get_card_excerpt( get_the_ID(), 200 ) : '';
 					<?php endif; ?>
 				</div>
 			</div>
+		<?php else : ?>
+			<div class="news-card-date">
+				<span class="news-card-date-group">
+					<span class="news-card-date-bar" aria-hidden="true"></span>
+					<span class="news-card-date-text">
+						<span class="news-card-date-year"><?php echo esc_html( $year ); ?></span>
+						<span class="news-card-date-md"><?php echo esc_html( $md ); ?></span>
+					</span>
+				</span>
+				<?php if ( $badge ) : ?>
+					<span class="<?php echo esc_attr( $badge['class'] ); ?>"><?php echo esc_html( $badge['label'] ); ?></span>
+				<?php endif; ?>
+			</div>
 		<?php endif; ?>
 		<div class="news-card-content">
-			<?php if ( ! $show_thumbnail ) : ?>
+			<?php if ( $flyer_url && $show_thumbnail ) : ?>
 				<div class="news-card-date">
 					<span class="news-card-date-group">
 						<span class="news-card-date-bar" aria-hidden="true"></span>
@@ -88,7 +150,9 @@ $excerpt    = $show_excerpt ? oiwake_get_card_excerpt( get_the_ID(), 200 ) : '';
 				</div>
 			<?php endif; ?>
 			<p class="news-card-title"><?php the_title(); ?></p>
-			<?php if ( '' !== $excerpt ) : ?>
+			<?php if ( '' !== $info_desc ) : ?>
+				<p class="news-card-excerpt news-card-desc"><?php echo esc_html( $info_desc ); ?></p>
+			<?php elseif ( '' !== $excerpt ) : ?>
 				<p class="news-card-excerpt"><?php echo esc_html( $excerpt ); ?></p>
 			<?php endif; ?>
 		</div>

@@ -371,7 +371,7 @@
       // Smart back button: return to actual referrer with dynamic label
       const backButton = document.getElementById('back-button');
       const backButtonLabel = document.getElementById('back-button-label');
-      if (backButton && backButtonLabel) {
+      if (backButton && backButtonLabel && backButton.dataset.fixedBack !== '1') {
         const fallbackHref = 'news.html';
         const fallbackLabel = 'ご案内一覧に戻る';
         const pageLabelMap = {
@@ -571,6 +571,65 @@
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && galleryLightbox?.classList.contains('is-open')) {
           closeGalleryLightbox();
+        }
+      });
+
+      const flyerLightbox = document.getElementById('flyer-lightbox');
+      const flyerLightboxImg = document.getElementById('flyer-lightbox-img');
+      const flyerLightboxClose = document.getElementById('flyer-lightbox-close');
+      const flyerOpenButtons = document.querySelectorAll('.news-detail-flyer-open');
+      let flyerLightboxTrigger = null;
+
+      function openFlyerLightbox(button) {
+        if (!flyerLightbox || !flyerLightboxImg) return;
+        const fullSrc = button.dataset.full;
+        const img = button.querySelector('img');
+        if (!fullSrc) return;
+
+        flyerLightboxTrigger = button;
+        flyerLightboxImg.src = fullSrc;
+        flyerLightboxImg.alt = img ? img.alt : '';
+        flyerLightbox.hidden = false;
+        requestAnimationFrame(() => {
+          flyerLightbox.classList.add('is-open');
+        });
+        document.body.classList.add('gallery-lightbox-open');
+        flyerLightboxClose?.focus();
+      }
+
+      function closeFlyerLightbox() {
+        if (!flyerLightbox || !flyerLightbox.classList.contains('is-open')) return;
+
+        flyerLightbox.classList.remove('is-open');
+        document.body.classList.remove('gallery-lightbox-open');
+
+        const onEnd = (event) => {
+          if (event.target !== flyerLightbox || event.propertyName !== 'opacity') return;
+          flyerLightbox.removeEventListener('transitionend', onEnd);
+          flyerLightbox.hidden = true;
+          flyerLightboxImg?.removeAttribute('src');
+          flyerLightboxTrigger?.focus();
+          flyerLightboxTrigger = null;
+        };
+
+        flyerLightbox.addEventListener('transitionend', onEnd);
+      }
+
+      flyerOpenButtons.forEach((button) => {
+        button.addEventListener('click', () => openFlyerLightbox(button));
+      });
+
+      flyerLightboxClose?.addEventListener('click', closeFlyerLightbox);
+
+      flyerLightbox?.addEventListener('click', (event) => {
+        if (event.target === flyerLightbox) {
+          closeFlyerLightbox();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeFlyerLightbox();
         }
       });
 

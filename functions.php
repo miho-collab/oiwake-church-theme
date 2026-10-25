@@ -48,6 +48,8 @@ function oiwake_church_theme_enqueue_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'oiwake_church_theme_enqueue_assets' );
 
+require get_template_directory() . '/inc/post-types.php';
+
 /**
  * Limit the blog posts index to INFORMATION categories (news + report).
  *
@@ -62,16 +64,39 @@ function oiwake_filter_information_main_query( $query ) {
 		return;
 	}
 
-	$cat_ids = oiwake_get_information_category_ids();
-	if ( empty( $cat_ids ) ) {
-		return;
-	}
-
-	$query->set( 'category__in', $cat_ids );
+	$query->set( 'post_type', oiwake_information_post_types( 'all' ) );
 	$query->set( 'orderby', 'date' );
 	$query->set( 'order', 'DESC' );
 }
 add_action( 'pre_get_posts', 'oiwake_filter_information_main_query' );
+
+/**
+ * Keep /news/page/2/ from redirecting back to page 1.
+ *
+ * The listing is a static Page with its own query, so WordPress treats
+ * the extra page segment as an invalid content page and strips it.
+ *
+ * @param string|false $redirect_url Redirect target.
+ * @return string|false
+ */
+function oiwake_information_listing_pagination_canonical( $redirect_url ) {
+	if ( ! is_page() ) {
+		return $redirect_url;
+	}
+
+	$news_page = get_page_by_path( 'news' );
+	if ( ! ( $news_page instanceof WP_Post ) || (int) get_queried_object_id() !== (int) $news_page->ID ) {
+		return $redirect_url;
+	}
+
+	$paged = max( (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+	if ( $paged > 1 ) {
+		return false;
+	}
+
+	return $redirect_url;
+}
+add_filter( 'redirect_canonical', 'oiwake_information_listing_pagination_canonical' );
 
 /**
  * Whether a nav item is the Contact / CONTACT entry.
@@ -692,9 +717,16 @@ function oiwake_get_information_filter_category( $filter ) {
  * @param int          $paged    Page number.
  * @return array<string, mixed>
  */
-function oiwake_get_posts_query_args( $category = null, $per_page = 6, $paged = 1 ) {
-	$args = array(
-		'post_type'           => 'post',
+function oiwake_get_posts_query_args( $which = 'all', $per_page = 6, $paged = 1 ) {
+	if ( $which instanceof WP_Term ) {
+		$which = in_array( $which->slug, array( 'event-report', 'community-report' ), true ) ? 'report' : 'news';
+	}
+	if ( ! is_string( $which ) || ! in_array( $which, array( 'all', 'news', 'report' ), true ) ) {
+		$which = 'all';
+	}
+
+	return array(
+		'post_type'           => oiwake_information_post_types( $which ),
 		'post_status'         => 'publish',
 		'posts_per_page'      => $per_page,
 		'paged'               => max( 1, (int) $paged ),
@@ -702,18 +734,6 @@ function oiwake_get_posts_query_args( $category = null, $per_page = 6, $paged = 
 		'order'               => 'DESC',
 		'ignore_sticky_posts' => true,
 	);
-
-	if ( $category instanceof WP_Term ) {
-		$args['cat'] = (int) $category->term_id;
-		return $args;
-	}
-
-	$cat_ids = oiwake_get_information_category_ids();
-	if ( ! empty( $cat_ids ) ) {
-		$args['category__in'] = $cat_ids;
-	}
-
-	return $args;
 }
 
 /**
@@ -894,34 +914,289 @@ function oiwake_get_news_archive_url() {
 }
 
 /**
- * Render theme-styled archive pagination.
+ * Event date from the NEWS field info_date.
+ *
+ * @param int|null $post_id Post ID.
+ * @return DateTime|null
  */
-function oiwake_the_posts_pagination() {
-	global $wp_query;
-
-	if ( empty( $wp_query->max_num_pages ) || (int) $wp_query->max_num_pages < 2 ) {
-		return;
+function oiwake_get_info_datetime( $post_id = null ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_the_ID();
+	$keys    = array( 'info_date' );
+	if ( oiwake_activity_report_post_type() === get_post_type( $post_id ) ) {
+		$keys = array( 'report_date', 'info_date' );
 	}
 
-	$current = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
-	$total   = (int) $wp_query->max_num_pages;
+	foreach ( $keys as $key ) {
+		$raw = get_post_meta( $post_id, $key, true );
+		if ( ! is_string( $raw ) ) {
+			continue;
+		}
 
-	$links = paginate_links(
-		array(
-			'total'     => $total,
-			'current'   => $current,
-			'mid_size'  => 2,
-			'prev_next' => false,
-			'type'      => 'array',
-		)
+		$raw = trim( $raw );
+		if ( '' === $raw ) {
+			continue;
+		}
+
+		$timezone = wp_timezone();
+		foreach ( array( 'Y-m-d H:i:s', 'Y-m-d H:i', 'Y-m-d' ) as $format ) {
+			$datetime = DateTime::createFromFormat( $format, $raw, $timezone );
+			$errors   = DateTime::getLastErrors();
+			$valid    = ( false === $errors || ( empty( $errors['warning_count'] ) && empty( $errors['error_count'] ) ) );
+			if ( $datetime instanceof DateTime && $valid ) {
+				return $datetime;
+			}
+		}
+	}
+
+	return null;
+}
+
+/**
+ * Date parts for cards and the single page.
+ *
+ * Uses info_date when it is set. Otherwise falls back to the post date.
+ *
+ * @param int|null $post_id   Post ID.
+ * @param bool     $with_time Include the time.
+ * @return array{year:string,md:string,time:string,attr:string,label:string}
+ */
+function oiwake_get_display_date_parts( $post_id = null, $with_time = false ) {
+	$post_id  = $post_id ? (int) $post_id : (int) get_the_ID();
+	$datetime = oiwake_get_info_datetime( $post_id );
+
+	if ( $datetime instanceof DateTime ) {
+		$timestamp = $datetime->getTimestamp();
+		return array(
+			'year'  => wp_date( 'Y.', $timestamp ),
+			'md'    => wp_date( 'n/j', $timestamp ),
+			'time'  => wp_date( 'H:i', $timestamp ),
+			'attr'  => $datetime->format( DateTime::ATOM ),
+			'label' => $with_time ? wp_date( 'Y. n/j H:i', $timestamp ) : wp_date( 'Y. n/j', $timestamp ),
+		);
+	}
+
+	$timestamp = (int) get_post_timestamp( $post_id );
+	return array(
+		'year'  => wp_date( 'Y.', $timestamp ),
+		'md'    => wp_date( 'n/j', $timestamp ),
+		'time'  => $with_time ? wp_date( 'H:i', $timestamp ) : '',
+		'attr'  => wp_date( DateTime::ATOM, $timestamp ),
+		'label' => $with_time ? wp_date( 'Y. n/j H:i', $timestamp ) : wp_date( 'Y. n/j', $timestamp ),
+	);
+}
+
+/**
+ * Split INFORMATION posts into today-or-later and earlier ones.
+ *
+ * Comparison uses info_date. Posts without that field are treated as past.
+ *
+ * @param WP_Term|null $category Category to limit, or null for both INFORMATION categories.
+ * @return array{upcoming:WP_Post[],past:WP_Post[]}
+ */
+function oiwake_get_information_schedule_posts( $which = 'all' ) {
+	$args                   = oiwake_get_posts_query_args( $which, -1, 1 );
+	$args['posts_per_page'] = -1;
+	unset( $args['paged'] );
+
+	$posts     = get_posts( $args );
+	$threshold = strtotime( current_time( 'Y-m-d' ) . ' 00:00:00' );
+	$upcoming  = array();
+	$past      = array();
+
+	foreach ( $posts as $post ) {
+		$datetime = oiwake_get_info_datetime( $post->ID );
+		if ( $datetime instanceof DateTime && $datetime->getTimestamp() >= $threshold ) {
+			$upcoming[] = $post;
+		} else {
+			$past[] = $post;
+		}
+	}
+
+	$sort_time = function ( $post ) {
+		$datetime = oiwake_get_info_datetime( $post->ID );
+		if ( $datetime instanceof DateTime ) {
+			return $datetime->getTimestamp();
+		}
+		return (int) get_post_timestamp( $post );
+	};
+
+	usort(
+		$upcoming,
+		function ( $a, $b ) use ( $sort_time ) {
+			return $sort_time( $a ) <=> $sort_time( $b );
+		}
+	);
+	usort(
+		$past,
+		function ( $a, $b ) use ( $sort_time ) {
+			return $sort_time( $b ) <=> $sort_time( $a );
+		}
 	);
 
-	if ( empty( $links ) ) {
+	return array(
+		'upcoming' => $upcoming,
+		'past'     => $past,
+	);
+}
+
+/**
+ * Timestamp used to place a post on the homepage schedule.
+ *
+ * Uses the event date when info_date is set.
+ *
+ * @param WP_Post $post Post object.
+ * @return int
+ */
+function oiwake_get_post_schedule_timestamp( $post ) {
+	$datetime = oiwake_get_info_datetime( $post->ID );
+	if ( $datetime instanceof DateTime ) {
+		return $datetime->getTimestamp();
+	}
+	return (int) get_post_timestamp( $post );
+}
+
+/**
+ * Homepage 活動報告: every report from the past month, or the nearest one.
+ *
+ * @param WP_Term|null $category Reports category.
+ * @return WP_Post[]
+ */
+function oiwake_get_home_report_posts() {
+	$args                   = oiwake_get_posts_query_args( 'report', -1, 1 );
+	$args['posts_per_page'] = -1;
+	unset( $args['paged'] );
+
+	$posts = get_posts( $args );
+	if ( empty( $posts ) ) {
+		return array();
+	}
+
+	$now  = strtotime( current_time( 'Y-m-d H:i:s' ) );
+	$from = strtotime( current_time( 'Y-m-d' ) . ' 00:00:00 -1 month' );
+	$recent = array();
+
+	foreach ( $posts as $post ) {
+		$timestamp = oiwake_get_post_schedule_timestamp( $post );
+		if ( $timestamp >= $from && $timestamp <= $now ) {
+			$recent[] = $post;
+		}
+	}
+
+	if ( ! empty( $recent ) ) {
+		usort(
+			$recent,
+			function ( $a, $b ) {
+				return oiwake_get_post_schedule_timestamp( $b ) <=> oiwake_get_post_schedule_timestamp( $a );
+			}
+		);
+		return $recent;
+	}
+
+	usort(
+		$posts,
+		function ( $a, $b ) use ( $now ) {
+			$distance_a = abs( oiwake_get_post_schedule_timestamp( $a ) - $now );
+			$distance_b = abs( oiwake_get_post_schedule_timestamp( $b ) - $now );
+			if ( $distance_a === $distance_b ) {
+				return oiwake_get_post_schedule_timestamp( $b ) <=> oiwake_get_post_schedule_timestamp( $a );
+			}
+			return $distance_a <=> $distance_b;
+		}
+	);
+
+	return array( $posts[0] );
+}
+
+/**
+ * How many past-listing pages are needed.
+ *
+ * Page 1 shows 3 posts. Later pages show 7.
+ *
+ * @param int $total Past post count.
+ * @return int
+ */
+function oiwake_past_information_page_count( $total ) {
+	$total = (int) $total;
+	if ( $total <= 0 ) {
+		return 0;
+	}
+	if ( $total <= 3 ) {
+		return 1;
+	}
+	return 1 + (int) ceil( ( $total - 3 ) / 7 );
+}
+
+/**
+ * Posts for one page of the past listing.
+ *
+ * @param WP_Post[] $posts Past posts, newest first.
+ * @param int       $page  Page number.
+ * @return WP_Post[]
+ */
+function oiwake_past_information_page_posts( $posts, $page ) {
+	$page = max( 1, (int) $page );
+	if ( 1 === $page ) {
+		return array_slice( $posts, 0, 3 );
+	}
+	$offset = 3 + ( $page - 2 ) * 7;
+	return array_slice( $posts, $offset, 7 );
+}
+
+/**
+ * URL for a page of 過去のご案内.
+ *
+ * @param int    $page Page number.
+ * @param string $tab  all|news|report.
+ * @return string
+ */
+function oiwake_past_information_page_url( $page, $tab = 'news' ) {
+	$url = oiwake_get_information_tab_url( $tab );
+	$url = remove_query_arg( 'past', $url );
+	if ( (int) $page > 1 ) {
+		$url = add_query_arg( 'past', (int) $page, $url );
+	}
+
+	$parts = wp_parse_url( $url );
+	if ( ! is_array( $parts ) ) {
+		return $url . '#past-news';
+	}
+
+	$rebuilt = '';
+	if ( ! empty( $parts['scheme'] ) ) {
+		$rebuilt .= $parts['scheme'] . '://';
+	}
+	if ( ! empty( $parts['host'] ) ) {
+		$rebuilt .= $parts['host'];
+	}
+	if ( ! empty( $parts['port'] ) ) {
+		$rebuilt .= ':' . $parts['port'];
+	}
+	$rebuilt .= isset( $parts['path'] ) ? $parts['path'] : '';
+	if ( ! empty( $parts['query'] ) ) {
+		$rebuilt .= '?' . $parts['query'];
+	}
+	$rebuilt .= '#past-news';
+
+	return $rebuilt;
+}
+
+/**
+ * Render theme-styled numbered pagination.
+ *
+ * @param int      $current      Current page.
+ * @param int      $total        Total pages.
+ * @param callable $url_for_page Maps a page number to a URL.
+ */
+function oiwake_render_news_pagination( $current, $total, $url_for_page ) {
+	$current = max( 1, (int) $current );
+	$total   = (int) $total;
+
+	if ( $total < 2 || ! is_callable( $url_for_page ) ) {
 		return;
 	}
 
-	$prev_url = $current > 1 ? get_pagenum_link( $current - 1 ) : '';
-	$next_url = $current < $total ? get_pagenum_link( $current + 1 ) : '';
+	$prev_url = $current > 1 ? (string) call_user_func( $url_for_page, $current - 1 ) : '';
+	$next_url = $current < $total ? (string) call_user_func( $url_for_page, $current + 1 ) : '';
 	?>
 <nav class="news-pagination" aria-label="<?php esc_attr_e( 'ページナビゲーション', 'oiwake-church-theme' ); ?>">
 	<?php if ( $prev_url ) : ?>
@@ -934,24 +1209,13 @@ function oiwake_the_posts_pagination() {
 		</a>
 	<?php endif; ?>
 
-	<?php foreach ( $links as $link ) : ?>
-		<?php
-		$is_current = false !== strpos( $link, 'current' );
-		$page_num   = '';
-		if ( preg_match( '/>\s*(\d+)\s*</', $link, $matches ) ) {
-			$page_num = $matches[1];
-		}
-		$href = '';
-		if ( preg_match( '/href=[\'"]([^\'"]+)[\'"]/', $link, $href_match ) ) {
-			$href = $href_match[1];
-		}
-		?>
-		<?php if ( $is_current ) : ?>
-			<a class="news-pagination__page is-current" href="<?php echo esc_url( get_pagenum_link( $current ) ); ?>" aria-current="page"><?php echo esc_html( $page_num ? $page_num : (string) $current ); ?></a>
-		<?php elseif ( $href && $page_num ) : ?>
-			<a class="news-pagination__page" href="<?php echo esc_url( $href ); ?>"><?php echo esc_html( $page_num ); ?></a>
+	<?php for ( $page = 1; $page <= $total; $page++ ) : ?>
+		<?php if ( $page === $current ) : ?>
+			<a class="news-pagination__page is-current" href="<?php echo esc_url( (string) call_user_func( $url_for_page, $page ) ); ?>" aria-current="page"><?php echo esc_html( (string) $page ); ?></a>
+		<?php else : ?>
+			<a class="news-pagination__page" href="<?php echo esc_url( (string) call_user_func( $url_for_page, $page ) ); ?>"><?php echo esc_html( (string) $page ); ?></a>
 		<?php endif; ?>
-	<?php endforeach; ?>
+	<?php endfor; ?>
 
 	<?php if ( $next_url ) : ?>
 		<a class="news-pagination__btn" href="<?php echo esc_url( $next_url ); ?>" aria-label="<?php esc_attr_e( '次のページ', 'oiwake-church-theme' ); ?>">
@@ -964,6 +1228,20 @@ function oiwake_the_posts_pagination() {
 	<?php endif; ?>
 </nav>
 	<?php
+}
+
+/**
+ * Render theme-styled archive pagination.
+ */
+function oiwake_the_posts_pagination() {
+	global $wp_query;
+
+	if ( empty( $wp_query->max_num_pages ) || (int) $wp_query->max_num_pages < 2 ) {
+		return;
+	}
+
+	$current = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+	oiwake_render_news_pagination( $current, (int) $wp_query->max_num_pages, 'get_pagenum_link' );
 }
 
 /**

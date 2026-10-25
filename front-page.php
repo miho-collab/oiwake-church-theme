@@ -7,19 +7,8 @@
 
 get_header();
 
-$news_category    = oiwake_get_news_category();
-$reports_category = oiwake_get_reports_category();
-
-$news_args = oiwake_get_posts_query_args( $news_category, 6 );
-if ( ! ( $news_category instanceof WP_Term ) && $reports_category instanceof WP_Term ) {
-	$news_args['category__not_in'] = array( (int) $reports_category->term_id );
-}
-$news_query = new WP_Query( $news_args );
-
-$reports_query = null;
-if ( $reports_category instanceof WP_Term ) {
-	$reports_query = new WP_Query( oiwake_get_posts_query_args( $reports_category, 6 ) );
-}
+$home_news_posts   = oiwake_get_information_schedule_posts( 'news' )['upcoming'];
+$home_report_posts = oiwake_get_home_report_posts();
 
 $home_card_args = array(
 	'variant'          => 'grid',
@@ -137,26 +126,20 @@ $hero_slides = array(
 </section>
 <!-- Information Section -->
 <section id="information-section" class="py-section-gap px-margin-safe">
-<div class="max-w-[1440px] mx-auto">
-	<div class="info-home-heading stagger-in">
-		<h2 class="info-home-heading-title">
-			<a href="<?php echo esc_url( oiwake_get_information_url() ); ?>">NEWS</a>
-		</h2>
-	</div>
-
+<div class="info-home max-w-[1440px] mx-auto">
 	<div id="news-section" class="info-home-block">
-		<div class="info-home-subtitle">
-			<a class="info-home-subtitle-link" href="<?php echo esc_url( oiwake_get_information_tab_url( 'news' ) ); ?>">
-				<p class="news-section-label">information</p>
-				<h3 class="news-section-title">ご案内</h3>
+		<div class="info-home-heading stagger-in">
+			<a class="info-home-heading-link" href="<?php echo esc_url( oiwake_get_information_tab_url( 'news' ) ); ?>">
+				<h2 class="info-home-heading-title">ご案内</h2>
 			</a>
 		</div>
 		<div class="info-home-cards">
-		<?php if ( $news_query->have_posts() ) : ?>
+		<?php if ( ! empty( $home_news_posts ) ) : ?>
 			<?php
+			global $post;
 			$index = 0;
-			while ( $news_query->have_posts() ) :
-				$news_query->the_post();
+			foreach ( $home_news_posts as $post ) :
+				setup_postdata( $post );
 				get_template_part(
 					'template-parts/content',
 					'news-card',
@@ -168,7 +151,7 @@ $hero_slides = array(
 					)
 				);
 				++$index;
-			endwhile;
+			endforeach;
 			wp_reset_postdata();
 			?>
 		<?php else : ?>
@@ -177,19 +160,19 @@ $hero_slides = array(
 		</div>
 	</div>
 
-	<?php if ( $reports_query instanceof WP_Query && $reports_query->have_posts() ) : ?>
+	<?php if ( ! empty( $home_report_posts ) ) : ?>
 	<div id="reports-section" class="info-home-block">
-		<div class="info-home-subtitle">
-			<a class="info-home-subtitle-link" href="<?php echo esc_url( oiwake_get_information_tab_url( 'report' ) ); ?>">
-				<p class="news-section-label">event report</p>
-				<h3 class="news-section-title">活動報告</h3>
+		<div class="info-home-heading stagger-in">
+			<a class="info-home-heading-link" href="<?php echo esc_url( oiwake_get_information_tab_url( 'report' ) ); ?>">
+				<h2 class="info-home-heading-title">活動報告</h2>
 			</a>
 		</div>
 		<div class="info-home-cards">
 			<?php
+			global $post;
 			$index = 0;
-			while ( $reports_query->have_posts() ) :
-				$reports_query->the_post();
+			foreach ( $home_report_posts as $post ) :
+				setup_postdata( $post );
 				get_template_part(
 					'template-parts/content',
 					'news-card',
@@ -201,7 +184,7 @@ $hero_slides = array(
 					)
 				);
 				++$index;
-			endwhile;
+			endforeach;
 			wp_reset_postdata();
 			?>
 		</div>

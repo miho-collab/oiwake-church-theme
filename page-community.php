@@ -16,7 +16,7 @@ $events_query = null;
 if ( $events_cat instanceof WP_Term ) {
 	$events_query = new WP_Query(
 		array(
-			'post_type'           => 'post',
+			'post_type'           => 'announcement',
 			'post_status'         => 'publish',
 			'posts_per_page'      => 10,
 			'cat'                 => (int) $events_cat->term_id,
@@ -32,7 +32,7 @@ $reports_query = null;
 if ( $reports_cat instanceof WP_Term ) {
 	$reports_query = new WP_Query(
 		array(
-			'post_type'           => 'post',
+			'post_type'           => 'activity_report',
 			'post_status'         => 'publish',
 			'posts_per_page'      => 10,
 			'paged'               => $paged,
